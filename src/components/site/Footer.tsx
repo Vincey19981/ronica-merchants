@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, Linkedin, Facebook, MessageCircle } from "lucide-react";
 import { Logo } from "./Logo";
 import { NAV_LINKS, SITE } from "@/lib/site";
 
@@ -49,6 +49,22 @@ export const Footer = () => (
 
       <div className="mt-10 border-t border-white/10 pt-6 flex flex-col gap-3 text-xs text-primary-foreground/60 md:flex-row md:items-center md:justify-between">
         <p>{SITE.pin} &nbsp;·&nbsp; {SITE.vat}</p>
+        <div className="flex items-center gap-3">
+          {[
+            { Icon: Linkedin, href: "#", label: "LinkedIn" },
+            { Icon: Facebook, href: "#", label: "Facebook" },
+            { Icon: MessageCircle, href: "#", label: "WhatsApp" },
+          ].map(({ Icon, href, label }) => (
+            <a
+              key={label}
+              href={href}
+              aria-label={label}
+              className="flex h-8 w-8 items-center justify-center rounded-md border border-white/10 text-white/70 transition-all hover:border-accent hover:text-accent hover:bg-accent/10"
+            >
+              <Icon className="h-4 w-4" />
+            </a>
+          ))}
+        </div>
         <p>© {new Date().getFullYear()} Ronica Merchants. All Rights Reserved.</p>
       </div>
     </div>
