@@ -48,7 +48,6 @@ export const Footer = () => (
       </div>
 
       <div className="mt-10 border-t border-white/10 pt-6 flex flex-col gap-3 text-xs text-primary-foreground/60 md:flex-row md:items-center md:justify-between">
-        <p>{SITE.pin} &nbsp;·&nbsp; {SITE.vat}</p>
         <div className="flex items-center gap-3">
           {[
             { Icon: Linkedin, href: "#", label: "LinkedIn" },
