@@ -43,3 +43,20 @@ export const CATEGORY_ICONS: Record<string, string> = {
   Technology: "💻",
   Packaging: "📦",
 };
+
+/**
+ * Per-category visual identity. Light tint band behind a navy icon —
+ * gives each card a distinct identity without leaving the brand palette.
+ */
+export const CATEGORY_THEME: Record<
+  ProductCategory,
+  { tint: string; iconName: "PenLine" | "FileText" | "Printer" | "Armchair" | "SprayCan" | "Laptop" | "PackageOpen" }
+> = {
+  Stationery: { tint: "#FFF8E7", iconName: "PenLine" },
+  Paper: { tint: "#EEF2FF", iconName: "FileText" },
+  "Toner & Ink": { tint: "#EEF0F8", iconName: "Printer" },
+  Furniture: { tint: "#F0F7F0", iconName: "Armchair" },
+  Cleaning: { tint: "#EEF7F7", iconName: "SprayCan" },
+  Technology: { tint: "#F5F0FF", iconName: "Laptop" },
+  Packaging: { tint: "#FFF3EE", iconName: "PackageOpen" },
+};

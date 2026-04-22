@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/site/Layout";
 import { PageHero } from "@/components/site/PageHero";
-import { CATEGORY_ICONS, PRODUCTS, type ProductCategory } from "@/data/products";
+import { ProductCard } from "@/components/site/ProductCard";
+import { PRODUCTS, type ProductCategory } from "@/data/products";
 
 const FILTERS: ("All" | ProductCategory)[] = ["All", "Stationery", "Paper", "Toner & Ink", "Furniture", "Cleaning", "Technology", "Packaging"];
 
@@ -57,25 +58,8 @@ const Products = () => {
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {items.map((p) => (
-              <div
-                key={p.name}
-                className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-accent hover:shadow-[var(--shadow-card)]"
-              >
-                <div className="flex h-36 items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5 text-5xl">
-                  <span aria-hidden>{CATEGORY_ICONS[p.category]}</span>
-                </div>
-                <div className="flex flex-1 flex-col border-t border-border p-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-accent">{p.category}</p>
-                  <h3 className="mt-1.5 text-base font-bold text-primary">{p.name}</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">{p.uom}</p>
-                  <div className="mt-auto pt-4">
-                    <Button asChild variant="outline" size="sm" className="w-full border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground">
-                      <Link to="/contact">Request Quote <ArrowRight className="ml-1 h-3.5 w-3.5" /></Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
+            {items.map((p, i) => (
+              <ProductCard key={p.name} product={p} index={i} />
             ))}
           </div>
 
