@@ -5,16 +5,25 @@ import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/site/Layout";
 import { PageHero } from "@/components/site/PageHero";
 import { ProductCard } from "@/components/site/ProductCard";
-import { PRODUCTS, type ProductCategory } from "@/data/products";
+import { PRODUCTS, type ProductCategory, type Product } from "@/data/products";
 
 const FILTERS: ("All" | ProductCategory)[] = ["All", "Stationery", "Paper", "Toner & Ink", "Furniture", "Cleaning", "Technology", "Packaging"];
+const CATEGORY_ORDER: ProductCategory[] = ["Stationery", "Paper", "Toner & Ink", "Furniture", "Cleaning", "Technology", "Packaging"];
 
 const Products = () => {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
-  const items = useMemo(
-    () => (filter === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.category === filter)),
-    [filter]
-  );
+
+  const grouped = useMemo(() => {
+    const source = filter === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.category === filter);
+    const map = new Map<ProductCategory, Product[]>();
+    for (const p of source) {
+      if (!map.has(p.category)) map.set(p.category, []);
+      map.get(p.category)!.push(p);
+    }
+    return CATEGORY_ORDER
+      .filter((c) => map.has(c))
+      .map((c) => ({ category: c, items: map.get(c)! }));
+  }, [filter]);
 
   return (
     <Layout>
@@ -57,9 +66,29 @@ const Products = () => {
             </Button>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {items.map((p, i) => (
-              <ProductCard key={p.name} product={p} index={i} />
+          <div className="space-y-14">
+            {grouped.map(({ category, items }) => (
+              <div key={category} id={category.toLowerCase().replace(/\s+/g, "-")}>
+                <div className="mb-6 flex items-end justify-between gap-4 border-b-2 border-accent/40 pb-3">
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-accent">
+                      Category
+                    </p>
+                    <h2 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">
+                      {category}
+                      <span className="text-accent">.</span>
+                    </h2>
+                  </div>
+                  <span className="rounded-full bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
+                    {items.length} {items.length === 1 ? "item" : "items"}
+                  </span>
+                </div>
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {items.map((p, i) => (
+                    <ProductCard key={p.name} product={p} index={i} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
 
