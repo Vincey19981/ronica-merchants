@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FileText } from "lucide-react";
+import { FileText, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/site/Layout";
 import { PageHero } from "@/components/site/PageHero";
@@ -12,9 +12,20 @@ const CATEGORY_ORDER: ProductCategory[] = ["Stationery", "Paper", "Toner & Ink",
 
 const Products = () => {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
+  const [query, setQuery] = useState("");
 
   const grouped = useMemo(() => {
-    const source = filter === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.category === filter);
+    const q = query.trim().toLowerCase();
+    const source = PRODUCTS.filter((p) => {
+      const matchesCategory = filter === "All" || p.category === filter;
+      if (!matchesCategory) return false;
+      if (!q) return true;
+      return (
+        p.name.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.uom.toLowerCase().includes(q)
+      );
+    });
     const map = new Map<ProductCategory, Product[]>();
     for (const p of source) {
       if (!map.has(p.category)) map.set(p.category, []);
@@ -23,7 +34,9 @@ const Products = () => {
     return CATEGORY_ORDER
       .filter((c) => map.has(c))
       .map((c) => ({ category: c, items: map.get(c)! }));
-  }, [filter]);
+  }, [filter, query]);
+
+  const totalResults = grouped.reduce((sum, g) => sum + g.items.length, 0);
 
   return (
     <Layout>
@@ -32,21 +45,54 @@ const Products = () => {
         send us your BOQ and we'll respond within 24 hours.
       </PageHero>
 
-      <section className="bg-surface border-b border-border">
-        <div className="container-wide flex gap-2 overflow-x-auto py-4">
-          {FILTERS.map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
-                filter === f
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-muted-foreground hover:border-primary hover:text-primary"
-              }`}
-            >
-              {f}
-            </button>
-          ))}
+      <section className="sticky top-0 z-30 border-b border-border bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80">
+        <div className="container-wide space-y-3 py-4">
+          {/* Search input */}
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search products — try 'toner', 'A4 paper', 'chair'…"
+              aria-label="Search products"
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-primary"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          {/* Filter chips */}
+          <div className="flex items-center gap-2 overflow-x-auto">
+            {FILTERS.map((f) => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+                  filter === f
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-muted-foreground hover:border-primary hover:text-primary"
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+
+          {query && (
+            <p className="text-xs text-muted-foreground">
+              {totalResults} {totalResults === 1 ? "result" : "results"} for{" "}
+              <span className="font-semibold text-primary">"{query}"</span>
+            </p>
+          )}
         </div>
       </section>
 
@@ -66,8 +112,21 @@ const Products = () => {
             </Button>
           </div>
 
-          <div className="space-y-14">
-            {grouped.map(({ category, items }) => (
+          {grouped.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border bg-card p-12 text-center">
+              <Search className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+              <p className="font-semibold text-primary">No products match your search.</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Try a different keyword, or{" "}
+                <Link to="/contact" className="font-semibold text-accent hover:underline">
+                  send us your BOQ
+                </Link>{" "}
+                — we likely stock it.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-14">
+              {grouped.map(({ category, items }) => (
               <div key={category} id={category.toLowerCase().replace(/\s+/g, "-")}>
                 <div className="mb-6 flex items-end justify-between gap-4 border-b-2 border-accent/40 pb-3">
                   <div>
@@ -89,8 +148,9 @@ const Products = () => {
                   ))}
                 </div>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           <p className="mt-10 text-center text-xs text-muted-foreground">
             Prices are not displayed publicly. We provide formal quotations only — to protect
