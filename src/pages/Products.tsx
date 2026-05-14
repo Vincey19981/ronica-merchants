@@ -9,7 +9,6 @@ import {
   PRODUCTS,
   CATEGORY_THEME,
   type ProductCategory,
-  type Product,
 } from "@/data/products";
 import {
   PenLine,
@@ -47,20 +46,23 @@ const ICONS: Record<string, LucideIcon> = {
 };
 
 const Products = () => {
-  const [params, setParams] = useSearchParams();
+  const [params] = useSearchParams();
   const activeCategory = params.get("category") as ProductCategory | null;
-  const [query, setQuery] = useState("");
+  return activeCategory ? (
+    <CategoryDetail category={activeCategory} />
+  ) : (
+    <CategoryLanding />
+  );
+};
 
-  // Counts per category (for landing cards)
+const CategoryLanding = () => {
+  const [, setParams] = useSearchParams();
   const counts = useMemo(() => {
     const m = new Map<ProductCategory, number>();
     for (const p of PRODUCTS) m.set(p.category, (m.get(p.category) ?? 0) + 1);
     return m;
   }, []);
-
-  // ─── LANDING (no category selected) ────────────────────────
-  if (!activeCategory) {
-    return (
+  return (
       <Layout>
         <PageHero eyebrow="Product Catalogue" title="Browse by category.">
           We supply seven categories under a single LPO. Pick a category to see
@@ -135,9 +137,11 @@ const Products = () => {
         </section>
       </Layout>
     );
-  }
+};
 
-  // ─── CATEGORY DETAIL (drill-in) ────────────────────────────
+const CategoryDetail = ({ category: activeCategory }: { category: ProductCategory }) => {
+  const [, setParams] = useSearchParams();
+  const [query, setQuery] = useState("");
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();
     return PRODUCTS.filter((p) => {
