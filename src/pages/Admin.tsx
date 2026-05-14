@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Inbox, Loader2, LogOut, Mail, Package, Phone, FileText, TrendingUp } from "lucide-react";
+import {
+  Inbox, Loader2, LogOut, Mail, Package, Phone, FileText, TrendingUp,
+  ClipboardList, Building2, Download as DownloadIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,12 +27,36 @@ interface Enquiry {
   created_at: string;
 }
 
+type QuoteStatus = "new" | "in_review" | "quoted" | "closed";
+
+interface QuoteItem {
+  id: string;
+  product_name: string;
+  quantity: number;
+  uom: string | null;
+  notes: string | null;
+}
+
+interface QuoteRequest {
+  id: string;
+  full_name: string;
+  company_name: string;
+  email: string;
+  phone: string;
+  notes: string | null;
+  attachment_path: string | null;
+  status: QuoteStatus;
+  created_at: string;
+  quote_request_items: QuoteItem[];
+}
+
 const Admin = () => {
   const { toast } = useToast();
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [quotes, setQuotes] = useState<QuoteRequest[]>([]);
   const [loadingData, setLoadingData] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [section, setSection] = useState<AdminSection>("overview");
@@ -52,7 +79,10 @@ const Admin = () => {
     const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid).eq("role", "admin").maybeSingle();
     const admin = !!data;
     setIsAdmin(admin);
-    if (admin) loadEnquiries();
+    if (admin) {
+      loadEnquiries();
+      loadQuotes();
+    }
   };
 
   const loadEnquiries = async () => {
@@ -61,6 +91,25 @@ const Admin = () => {
     if (error) toast({ title: "Failed to load", description: error.message, variant: "destructive" });
     else setEnquiries((data ?? []) as Enquiry[]);
     setLoadingData(false);
+  };
+
+  const loadQuotes = async () => {
+    const { data, error } = await supabase
+      .from("quote_requests")
+      .select("*, quote_request_items(*)")
+      .order("created_at", { ascending: false });
+    if (error) toast({ title: "Failed to load quotes", description: error.message, variant: "destructive" });
+    else setQuotes((data ?? []) as QuoteRequest[]);
+  };
+
+  const updateQuoteStatus = async (id: string, status: QuoteStatus) => {
+    const { error } = await supabase.from("quote_requests").update({ status }).eq("id", id);
+    if (error) {
+      toast({ title: "Update failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    setQuotes((prev) => prev.map((q) => (q.id === id ? { ...q, status } : q)));
+    toast({ title: "Status updated" });
   };
 
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -73,6 +122,14 @@ const Admin = () => {
     });
     setSubmitting(false);
     if (error) toast({ title: "Sign-in failed", description: error.message, variant: "destructive" });
+  };
+
+  const onGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/admin` },
+    });
+    if (error) toast({ title: "Google sign-in unavailable", description: error.message, variant: "destructive" });
   };
 
   const onLogout = async () => { await supabase.auth.signOut(); };
@@ -103,6 +160,12 @@ const Admin = () => {
           <Button type="submit" variant="navy" className="mt-6 w-full" disabled={submitting}>
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
           </Button>
+          <div className="my-4 flex items-center gap-3 text-[11px] uppercase tracking-wider text-muted-foreground">
+            <div className="h-px flex-1 bg-border" /> or <div className="h-px flex-1 bg-border" />
+          </div>
+          <Button type="button" variant="outline" className="w-full" onClick={onGoogle}>
+            Continue with Google
+          </Button>
           <p className="mt-4 text-xs text-muted-foreground">
             To create an admin: sign up via Lovable Cloud → Users, then add a row to <code className="rounded bg-muted px-1">user_roles</code> with role = <code className="rounded bg-muted px-1">admin</code>.
           </p>
@@ -132,6 +195,7 @@ const Admin = () => {
             <div className="h-5 w-px bg-border" />
             <h1 className="text-sm font-bold uppercase tracking-wider text-primary">
               {section === "overview" && "Overview"}
+              {section === "quotes" && "Quote Requests"}
               {section === "enquiries" && "Enquiries"}
               {section === "products" && "Products Catalogue"}
               {section === "tenders" && "Tenders"}
@@ -143,7 +207,15 @@ const Admin = () => {
 
           <main className="flex-1 p-6 lg:p-8">
             {section === "overview" && (
-              <OverviewPanel enquiries={enquiries} />
+              <OverviewPanel enquiries={enquiries} quotes={quotes} />
+            )}
+            {section === "quotes" && (
+              <QuotesPanel
+                quotes={quotes}
+                onRefresh={loadQuotes}
+                onDownload={downloadAttachment}
+                onStatusChange={updateQuoteStatus}
+              />
             )}
             {section === "enquiries" && (
               <EnquiriesPanel

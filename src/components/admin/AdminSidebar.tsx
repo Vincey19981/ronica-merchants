@@ -1,4 +1,4 @@
-import { LayoutDashboard, Inbox, Package, FileText, LogOut } from "lucide-react";
+import { LayoutDashboard, Inbox, Package, FileText, LogOut, ClipboardList } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 
-export type AdminSection = "overview" | "enquiries" | "products" | "tenders";
+export type AdminSection = "overview" | "quotes" | "enquiries" | "products" | "tenders";
 
 const items: { id: AdminSection; title: string; icon: typeof LayoutDashboard }[] = [
   { id: "overview", title: "Overview", icon: LayoutDashboard },
+  { id: "quotes", title: "Quote Requests", icon: ClipboardList },
   { id: "enquiries", title: "Enquiries", icon: Inbox },
   { id: "products", title: "Products", icon: Package },
   { id: "tenders", title: "Tenders", icon: FileText },
