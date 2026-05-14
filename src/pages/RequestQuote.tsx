@@ -1,20 +1,29 @@
+import { useEffect } from "react";
 import { Layout } from "@/components/site/Layout";
 import { PageHero } from "@/components/site/PageHero";
 import { QuoteRequestForm } from "@/components/forms/QuoteRequestForm";
-import { Helmet } from "react-helmet-async";
 import { Clock, ShieldCheck, FileSpreadsheet } from "lucide-react";
 
-const RequestQuote = () => (
-  <Layout>
-    <Helmet>
-      <title>Request a Quote — Ronica Merchants</title>
-      <meta
-        name="description"
-        content="Submit a Request for Quotation. Add multiple products, attach your BOQ, and receive a formal quotation within 24 business hours."
-      />
-      <link rel="canonical" href="/request-quote" />
-    </Helmet>
+const RequestQuote = () => {
+  useEffect(() => {
+    document.title = "Request a Quote — Ronica Merchants";
+    const setMeta = (name: string, content: string) => {
+      let el = document.querySelector(`meta[name="${name}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute("name", name);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+    setMeta(
+      "description",
+      "Submit a Request for Quotation. Add multiple products, attach your BOQ, and receive a formal quotation within 24 business hours.",
+    );
+  }, []);
 
+  return (
+  <Layout>
     <PageHero eyebrow="Request for Quotation" title="Tell us what you need.">
       Add as many products as you like, attach your BOQ or tender document,
       and our procurement team will respond with a formal, line-by-line quotation
@@ -54,6 +63,7 @@ const RequestQuote = () => (
       </div>
     </section>
   </Layout>
-);
+  );
+};
 
 export default RequestQuote;
