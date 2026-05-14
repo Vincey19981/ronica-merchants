@@ -53,6 +53,83 @@ export type Database = {
         }
         Relationships: []
       }
+      quote_request_items: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          product_name: string
+          quantity: number
+          quote_request_id: string
+          uom: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          product_name: string
+          quantity: number
+          quote_request_id: string
+          uom?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          product_name?: string
+          quantity?: number
+          quote_request_id?: string
+          uom?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_request_items_quote_request_id_fkey"
+            columns: ["quote_request_id"]
+            isOneToOne: false
+            referencedRelation: "quote_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quote_requests: {
+        Row: {
+          attachment_path: string | null
+          company_name: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          notes: string | null
+          phone: string
+          status: Database["public"]["Enums"]["quote_status"]
+          updated_at: string
+        }
+        Insert: {
+          attachment_path?: string | null
+          company_name: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          notes?: string | null
+          phone: string
+          status?: Database["public"]["Enums"]["quote_status"]
+          updated_at?: string
+        }
+        Update: {
+          attachment_path?: string | null
+          company_name?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          notes?: string | null
+          phone?: string
+          status?: Database["public"]["Enums"]["quote_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -89,6 +166,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin"
+      quote_status: "new" | "in_review" | "quoted" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -217,6 +295,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin"],
+      quote_status: ["new", "in_review", "quoted", "closed"],
     },
   },
 } as const

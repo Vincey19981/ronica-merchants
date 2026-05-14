@@ -43,7 +43,7 @@ export const Header = () => {
               {SITE.phone}
             </a>
             <Button asChild variant="gold" size="sm">
-              <Link to="/contact">Request a Quote</Link>
+              <Link to="/request-quote">Request a Quote</Link>
             </Button>
           </div>
           <button
@@ -72,7 +72,7 @@ export const Header = () => {
                 </Link>
               ))}
               <Button asChild variant="gold" className="mt-3">
-                <Link to="/contact" onClick={() => setOpen(false)}>
+                <Link to="/request-quote" onClick={() => setOpen(false)}>
                   Request a Quote
                 </Link>
               </Button>

@@ -52,7 +52,7 @@ export const ProductCard = ({ product, index = 0 }: { product: Product; index?: 
 
         <div className="mt-auto pt-5">
           <Link
-            to="/contact"
+            to={`/request-quote?product=${encodeURIComponent(product.name)}`}
             className="group/btn relative flex h-10 w-full items-center justify-center overflow-hidden rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-accent hover:text-accent-foreground"
           >
             <span className="flex items-center gap-1.5 transition-transform duration-200 group-hover/btn:translate-x-1">

@@ -10,6 +10,7 @@ import TenderServices from "./pages/TenderServices.tsx";
 import ActiveTenders from "./pages/ActiveTenders.tsx";
 import Contact from "./pages/Contact.tsx";
 import Admin from "./pages/Admin.tsx";
+import RequestQuote from "./pages/RequestQuote.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/tender-services" element={<TenderServices />} />
           <Route path="/active-tenders" element={<ActiveTenders />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/request-quote" element={<RequestQuote />} />
           <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

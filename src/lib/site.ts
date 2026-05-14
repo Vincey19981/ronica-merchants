@@ -16,5 +16,6 @@ export const NAV_LINKS = [
   { to: "/products", label: "Products" },
   { to: "/tender-services", label: "Tender Services" },
   { to: "/active-tenders", label: "Active Tenders" },
+  { to: "/request-quote", label: "Request Quote" },
   { to: "/contact", label: "Contact" },
 ];
