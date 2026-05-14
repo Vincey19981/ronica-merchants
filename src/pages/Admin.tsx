@@ -238,14 +238,14 @@ export default Admin;
 
 /* ---------- Panels ---------- */
 
-const OverviewPanel = ({ enquiries }: { enquiries: Enquiry[] }) => {
+const OverviewPanel = ({ enquiries, quotes }: { enquiries: Enquiry[]; quotes: QuoteRequest[] }) => {
   const last7 = useMemo(() => {
     const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
     return enquiries.filter((e) => new Date(e.created_at).getTime() >= cutoff).length;
   }, [enquiries]);
-  const boqCount = useMemo(
-    () => enquiries.filter((e) => e.enquiry_type?.toLowerCase().includes("boq")).length,
-    [enquiries],
+  const openQuotes = useMemo(
+    () => quotes.filter((q) => q.status === "new" || q.status === "in_review").length,
+    [quotes],
   );
 
   return (
@@ -258,10 +258,10 @@ const OverviewPanel = ({ enquiries }: { enquiries: Enquiry[] }) => {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard label="Quote requests" value={quotes.length} icon={ClipboardList} hint="All time" />
+        <StatCard label="Open quotes" value={openQuotes} icon={FileText} hint="Awaiting response" />
         <StatCard label="Total enquiries" value={enquiries.length} icon={Inbox} hint="All time" />
         <StatCard label="Last 7 days" value={last7} icon={TrendingUp} hint="New enquiries" />
-        <StatCard label="BOQ requests" value={boqCount} icon={FileText} hint="With attachments" />
-        <StatCard label="Catalogue items" value={PRODUCTS.length} icon={Package} hint="Active SKUs" />
       </div>
 
       <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
@@ -379,5 +379,125 @@ const TendersPanel = () => (
     <p className="mt-2 text-sm text-muted-foreground">
       A tenders table with RLS will hook in here. Currently the public /active-tenders page renders static sample data.
     </p>
+  </div>
+);
+
+const STATUS_STYLES: Record<QuoteStatus, string> = {
+  new: "bg-accent text-accent-foreground",
+  in_review: "bg-primary text-primary-foreground",
+  quoted: "bg-success/20 text-success",
+  closed: "bg-muted text-muted-foreground",
+};
+
+const STATUS_LABELS: Record<QuoteStatus, string> = {
+  new: "New",
+  in_review: "In review",
+  quoted: "Quoted",
+  closed: "Closed",
+};
+
+const QuotesPanel = ({
+  quotes,
+  onRefresh,
+  onDownload,
+  onStatusChange,
+}: {
+  quotes: QuoteRequest[];
+  onRefresh: () => void;
+  onDownload: (p: string) => void;
+  onStatusChange: (id: string, s: QuoteStatus) => void;
+}) => (
+  <div className="space-y-4">
+    <div className="flex items-center justify-between">
+      <p className="text-sm text-muted-foreground">{quotes.length} quote requests</p>
+      <Button onClick={onRefresh} variant="outline" size="sm">Refresh</Button>
+    </div>
+    {quotes.length === 0 ? (
+      <div className="rounded-xl border border-dashed border-border bg-card p-12 text-center text-muted-foreground">
+        No quote requests yet.
+      </div>
+    ) : (
+      <div className="space-y-4">
+        {quotes.map((q) => (
+          <div key={q.id} className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-bold text-primary">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Building2 className="h-4 w-4 text-accent" />
+                    {q.company_name}
+                  </span>
+                </h3>
+                <p className="text-sm text-muted-foreground">{q.full_name}</p>
+                <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                  <a href={`mailto:${q.email}`} className="flex items-center gap-1.5 hover:text-accent">
+                    <Mail className="h-3.5 w-3.5" />{q.email}
+                  </a>
+                  <a href={`tel:${q.phone}`} className="flex items-center gap-1.5 hover:text-accent">
+                    <Phone className="h-3.5 w-3.5" />{q.phone}
+                  </a>
+                </div>
+              </div>
+              <div className="text-right text-xs text-muted-foreground">
+                <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider ${STATUS_STYLES[q.status]}`}>
+                  {STATUS_LABELS[q.status]}
+                </span>
+                <p className="mt-2">{new Date(q.created_at).toLocaleString()}</p>
+              </div>
+            </div>
+
+            <div className="mt-4 overflow-hidden rounded-lg border border-border">
+              <table className="w-full text-sm">
+                <thead className="bg-surface text-left text-[11px] font-bold uppercase tracking-wider text-primary">
+                  <tr>
+                    <th className="px-3 py-2">Product</th>
+                    <th className="px-3 py-2 w-20">Qty</th>
+                    <th className="px-3 py-2">Unit</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {q.quote_request_items.map((it) => (
+                    <tr key={it.id}>
+                      <td className="px-3 py-2 font-medium text-foreground">{it.product_name}</td>
+                      <td className="px-3 py-2">{it.quantity}</td>
+                      <td className="px-3 py-2 text-muted-foreground">{it.uom ?? "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {q.notes && (
+              <p className="mt-3 whitespace-pre-wrap rounded-lg bg-surface p-3 text-sm text-foreground">
+                <span className="font-semibold">Notes:</span> {q.notes}
+              </p>
+            )}
+
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              {q.attachment_path && (
+                <Button onClick={() => onDownload(q.attachment_path!)} variant="goldOutline" size="sm">
+                  <DownloadIcon className="mr-1 h-3.5 w-3.5" /> Attachment
+                </Button>
+              )}
+              <div className="ml-auto flex items-center gap-1">
+                {(["new", "in_review", "quoted", "closed"] as QuoteStatus[]).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => onStatusChange(q.id, s)}
+                    className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider transition-colors ${
+                      q.status === s
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card text-muted-foreground hover:border-primary hover:text-primary"
+                    }`}
+                  >
+                    {STATUS_LABELS[s]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
   </div>
 );
