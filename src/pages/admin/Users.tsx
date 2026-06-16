@@ -168,7 +168,7 @@ const Users = () => {
                       <TableCell>
                         <div className="flex gap-2">
                           <Select
-                            value={newRole[p.id] ?? ""}
+                            value={newRole[p.id]}
                             onValueChange={(v) => setNewRole({ ...newRole, [p.id]: v as AppRole })}
                           >
                             <SelectTrigger className="w-[180px]">
