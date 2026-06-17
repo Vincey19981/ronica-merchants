@@ -1,14 +1,25 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, PenLine, FileText, Printer, Armchair, SprayCan, Laptop, PackageOpen, type LucideIcon } from "lucide-react";
-import { CATEGORY_THEME, type Product } from "@/data/products";
+import { CATEGORY_THEME, type ProductCategory } from "@/data/products";
+import { useAuth } from "@/lib/auth";
+import { useContractPrice, formatPrice } from "@/hooks/use-products";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   PenLine, FileText, Printer, Armchair, SprayCan, Laptop, PackageOpen,
 };
 
-export const ProductCard = ({ product, index = 0 }: { product: Product; index?: number }) => {
+export interface ProductCardItem {
+  id?: string;
+  name: string;
+  category: ProductCategory;
+  uom: string;
+}
+
+export const ProductCard = ({ product, index = 0 }: { product: ProductCardItem; index?: number }) => {
   const theme = CATEGORY_THEME[product.category];
   const Icon = ICON_MAP[theme.iconName] ?? FileText;
+  const { user, orgId } = useAuth();
+  const { data: contractPrice } = useContractPrice(product.id, 1, !!user && !!orgId && !!product.id);
 
   return (
     <article
@@ -49,6 +60,13 @@ export const ProductCard = ({ product, index = 0 }: { product: Product; index?: 
           {product.name}
         </h3>
         <p className="mt-1 text-sm text-muted-foreground">{product.uom}</p>
+
+        {contractPrice != null && (
+          <div className="mt-3 rounded-md border border-accent/40 bg-accent-soft/40 px-2.5 py-1.5">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-accent">Your contract price</p>
+            <p className="text-sm font-bold text-primary">{formatPrice(contractPrice)}</p>
+          </div>
+        )}
 
         <div className="mt-auto pt-5">
           <Link
