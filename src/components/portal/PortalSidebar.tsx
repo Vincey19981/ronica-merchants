@@ -33,7 +33,8 @@ type Item = { title: string; url: string; icon: typeof LayoutDashboard; roles?: 
 
 const portalItems: Item[] = [
   { title: "Dashboard", url: "/portal", icon: LayoutDashboard },
-  { title: "Catalog", url: "/portal/catalog", icon: Package, roles: ["procurement_officer"] },
+  { title: "Catalog", url: "/portal/catalog", icon: Package },
+  { title: "Cart", url: "/portal/cart", icon: ShoppingCart },
   { title: "Tenders", url: "/portal/tenders", icon: FileText, roles: ["procurement_officer"] },
   { title: "Orders", url: "/portal/orders", icon: ShoppingCart, roles: ["procurement_officer"] },
   { title: "Invoices", url: "/portal/invoices", icon: Receipt, roles: ["finance"] },
