@@ -6,10 +6,11 @@ import { Layout } from "@/components/site/Layout";
 import { PageHero } from "@/components/site/PageHero";
 import { ProductCard } from "@/components/site/ProductCard";
 import {
-  PRODUCTS,
   CATEGORY_THEME,
   type ProductCategory,
 } from "@/data/products";
+import { useProducts } from "@/hooks/use-products";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   PenLine,
   FileText as FT,
@@ -57,11 +58,12 @@ const Products = () => {
 
 const CategoryLanding = () => {
   const [, setParams] = useSearchParams();
+  const { data: products = [], isLoading } = useProducts();
   const counts = useMemo(() => {
     const m = new Map<ProductCategory, number>();
-    for (const p of PRODUCTS) m.set(p.category, (m.get(p.category) ?? 0) + 1);
+    for (const p of products) m.set(p.category, (m.get(p.category) ?? 0) + 1);
     return m;
-  }, []);
+  }, [products]);
   return (
       <Layout>
         <PageHero eyebrow="Product Catalogue" title="Browse by category.">
@@ -105,7 +107,7 @@ const CategoryLanding = () => {
                       <div className="flex items-center justify-between gap-2">
                         <h2 className="text-xl font-bold text-primary">{cat}</h2>
                         <span className="rounded-full bg-primary/5 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
-                          {counts.get(cat) ?? 0} items
+                          {isLoading ? "…" : `${counts.get(cat) ?? 0} items`}
                         </span>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">{CATEGORY_BLURB[cat]}</p>
@@ -142,14 +144,14 @@ const CategoryLanding = () => {
 const CategoryDetail = ({ category: activeCategory }: { category: ProductCategory }) => {
   const [, setParams] = useSearchParams();
   const [query, setQuery] = useState("");
+  const { data: products = [], isLoading } = useProducts(activeCategory);
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return PRODUCTS.filter((p) => {
-      if (p.category !== activeCategory) return false;
-      if (!q) return true;
-      return p.name.toLowerCase().includes(q) || p.uom.toLowerCase().includes(q);
-    });
-  }, [activeCategory, query]);
+    if (!q) return products;
+    return products.filter(
+      (p) => p.name.toLowerCase().includes(q) || p.uom.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q),
+    );
+  }, [products, query]);
 
   return (
     <Layout>
@@ -203,7 +205,13 @@ const CategoryDetail = ({ category: activeCategory }: { category: ProductCategor
 
       <section className="bg-background py-12">
         <div className="container-wide">
-          {items.length === 0 ? (
+          {isLoading ? (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-[320px] w-full rounded-xl" />
+              ))}
+            </div>
+          ) : items.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border bg-card p-12 text-center">
               <Search className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
               <p className="font-semibold text-primary">No items match your search.</p>
@@ -218,7 +226,7 @@ const CategoryDetail = ({ category: activeCategory }: { category: ProductCategor
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {items.map((p, i) => (
-                <ProductCard key={p.name} product={p} index={i} />
+                <ProductCard key={p.id} product={p} index={i} />
               ))}
             </div>
           )}
