@@ -144,14 +144,14 @@ const CategoryLanding = () => {
 const CategoryDetail = ({ category: activeCategory }: { category: ProductCategory }) => {
   const [, setParams] = useSearchParams();
   const [query, setQuery] = useState("");
+  const { data: products = [], isLoading } = useProducts(activeCategory);
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return PRODUCTS.filter((p) => {
-      if (p.category !== activeCategory) return false;
-      if (!q) return true;
-      return p.name.toLowerCase().includes(q) || p.uom.toLowerCase().includes(q);
-    });
-  }, [activeCategory, query]);
+    if (!q) return products;
+    return products.filter(
+      (p) => p.name.toLowerCase().includes(q) || p.uom.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q),
+    );
+  }, [products, query]);
 
   return (
     <Layout>
@@ -205,7 +205,13 @@ const CategoryDetail = ({ category: activeCategory }: { category: ProductCategor
 
       <section className="bg-background py-12">
         <div className="container-wide">
-          {items.length === 0 ? (
+          {isLoading ? (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-[320px] w-full rounded-xl" />
+              ))}
+            </div>
+          ) : items.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border bg-card p-12 text-center">
               <Search className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
               <p className="font-semibold text-primary">No items match your search.</p>
@@ -220,7 +226,7 @@ const CategoryDetail = ({ category: activeCategory }: { category: ProductCategor
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {items.map((p, i) => (
-                <ProductCard key={p.name} product={p} index={i} />
+                <ProductCard key={p.id} product={p} index={i} />
               ))}
             </div>
           )}
