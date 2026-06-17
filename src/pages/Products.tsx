@@ -6,10 +6,11 @@ import { Layout } from "@/components/site/Layout";
 import { PageHero } from "@/components/site/PageHero";
 import { ProductCard } from "@/components/site/ProductCard";
 import {
-  PRODUCTS,
   CATEGORY_THEME,
   type ProductCategory,
 } from "@/data/products";
+import { useProducts } from "@/hooks/use-products";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   PenLine,
   FileText as FT,
@@ -57,11 +58,12 @@ const Products = () => {
 
 const CategoryLanding = () => {
   const [, setParams] = useSearchParams();
+  const { data: products = [], isLoading } = useProducts();
   const counts = useMemo(() => {
     const m = new Map<ProductCategory, number>();
-    for (const p of PRODUCTS) m.set(p.category, (m.get(p.category) ?? 0) + 1);
+    for (const p of products) m.set(p.category, (m.get(p.category) ?? 0) + 1);
     return m;
-  }, []);
+  }, [products]);
   return (
       <Layout>
         <PageHero eyebrow="Product Catalogue" title="Browse by category.">
@@ -105,7 +107,7 @@ const CategoryLanding = () => {
                       <div className="flex items-center justify-between gap-2">
                         <h2 className="text-xl font-bold text-primary">{cat}</h2>
                         <span className="rounded-full bg-primary/5 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
-                          {counts.get(cat) ?? 0} items
+                          {isLoading ? "…" : `${counts.get(cat) ?? 0} items`}
                         </span>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">{CATEGORY_BLURB[cat]}</p>
