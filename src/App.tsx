@@ -21,6 +21,8 @@ import MfaEnroll from "./pages/auth/MfaEnroll.tsx";
 import MfaVerify from "./pages/auth/MfaVerify.tsx";
 import PortalDashboard from "./pages/portal/Dashboard.tsx";
 import PortalProfile from "./pages/portal/Profile.tsx";
+import PortalCatalog from "./pages/portal/Catalog.tsx";
+import PortalCart from "./pages/portal/Cart.tsx";
 import AdminOrganizations from "./pages/admin/Organizations.tsx";
 import AdminUsers from "./pages/admin/Users.tsx";
 
@@ -72,6 +74,26 @@ const App = () => (
                 <ProtectedRoute>
                   <PortalLayout>
                     <PortalProfile />
+                  </PortalLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/catalog"
+              element={
+                <ProtectedRoute>
+                  <PortalLayout>
+                    <PortalCatalog />
+                  </PortalLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/cart"
+              element={
+                <ProtectedRoute>
+                  <PortalLayout>
+                    <PortalCart />
                   </PortalLayout>
                 </ProtectedRoute>
               }
