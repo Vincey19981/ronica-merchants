@@ -18,7 +18,8 @@ export interface ProductCardItem {
 export const ProductCard = ({ product, index = 0 }: { product: ProductCardItem; index?: number }) => {
   const theme = CATEGORY_THEME[product.category];
   const Icon = ICON_MAP[theme.iconName] ?? FileText;
-  const { user, orgId } = useAuth();
+  const { user, profile } = useAuth();
+  const orgId = profile?.org_id ?? null;
   const { data: contractPrice } = useContractPrice(product.id, 1, !!user && !!orgId && !!product.id);
 
   return (
