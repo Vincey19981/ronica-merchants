@@ -23,6 +23,9 @@ import PortalDashboard from "./pages/portal/Dashboard.tsx";
 import PortalProfile from "./pages/portal/Profile.tsx";
 import PortalCatalog from "./pages/portal/Catalog.tsx";
 import PortalCart from "./pages/portal/Cart.tsx";
+import PortalTenders from "./pages/portal/Tenders.tsx";
+import TenderNew from "./pages/portal/TenderNew.tsx";
+import TenderDetail from "./pages/portal/TenderDetail.tsx";
 import AdminOrganizations from "./pages/admin/Organizations.tsx";
 import AdminUsers from "./pages/admin/Users.tsx";
 
@@ -94,6 +97,36 @@ const App = () => (
                 <ProtectedRoute>
                   <PortalLayout>
                     <PortalCart />
+                  </PortalLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/tenders"
+              element={
+                <ProtectedRoute>
+                  <PortalLayout>
+                    <PortalTenders />
+                  </PortalLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/tenders/new"
+              element={
+                <ProtectedRoute roles={["procurement_officer", "admin"]}>
+                  <PortalLayout>
+                    <TenderNew />
+                  </PortalLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/tenders/:id"
+              element={
+                <ProtectedRoute>
+                  <PortalLayout>
+                    <TenderDetail />
                   </PortalLayout>
                 </ProtectedRoute>
               }
