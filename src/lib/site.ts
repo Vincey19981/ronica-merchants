@@ -1,8 +1,8 @@
 export const SITE = {
   name: "RONICA MERCHANTS",
   tagline: "Supplying Excellence. Winning Tenders.",
-  phone: "+254 [Phone Placeholder]",
-  phoneHref: "tel:+254000000000",
+  phone: "+254 104 346 034",
+  phoneHref: "tel:+254104346034",
   email: "info@ronicamerchants.co.ke",
   address: "P.O. Box [XXXX-00100], Nairobi, Kenya",
   pin: "PIN: P[Placeholder]",
