@@ -1,12 +1,32 @@
-import { Link } from "react-router-dom";
-import { Trash2, ShoppingCart } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Trash2, ShoppingCart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { useCart } from "@/lib/cart";
 import { formatPrice } from "@/hooks/use-products";
 import { toast } from "@/hooks/use-toast";
+import { useCheckout } from "@/hooks/use-orders";
 
 const PortalCart = () => {
   const { items, updateQty, remove, clear, subtotal_cents, has_unpriced } = useCart();
+  const checkout = useCheckout();
+  const navigate = useNavigate();
+  const [po, setPo] = useState("");
+  const [notes, setNotes] = useState("");
+
+  const placeOrder = async () => {
+    try {
+      const order = await checkout.mutateAsync({ items, po_number: po, notes });
+      clear();
+      toast({ title: "Order placed", description: `Order ${(order as any).order_number} submitted.` });
+      navigate(`/portal/orders/${(order as any).id}`);
+    } catch (e: any) {
+      toast({ title: "Could not place order", description: e.message, variant: "destructive" });
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -83,9 +103,24 @@ const PortalCart = () => {
       <div className="flex flex-wrap gap-3">
         <Button variant="outline" onClick={() => { clear(); toast({ title: "Cart cleared" }); }}>Clear cart</Button>
         <Button asChild variant="outline"><Link to="/portal/catalog">Continue shopping</Link></Button>
-        <Button variant="gold" disabled className="ml-auto">
-          Checkout (Phase 4)
-        </Button>
+      </div>
+
+      <div className="grid gap-4 rounded-lg border border-border bg-card p-4 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label htmlFor="po">PO number (optional)</Label>
+          <Input id="po" value={po} onChange={(e) => setPo(e.target.value)} placeholder="e.g. PO-2026-0123" />
+        </div>
+        <div className="space-y-1 sm:row-span-2">
+          <Label htmlFor="notes">Notes for our team</Label>
+          <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
+        </div>
+        <div className="sm:col-span-2 flex items-center justify-end gap-3">
+          <p className="text-sm text-muted-foreground">Total: <strong className="text-foreground">{formatPrice(subtotal_cents)}</strong></p>
+          <Button variant="gold" onClick={placeOrder} disabled={checkout.isPending}>
+            {checkout.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Place order
+          </Button>
+        </div>
       </div>
     </div>
   );
