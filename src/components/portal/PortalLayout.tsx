@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { PortalSidebar } from "./PortalSidebar";
+import { NotificationBell } from "./NotificationBell";
 
 export const PortalLayout = ({ children }: { children: ReactNode }) => (
   <SidebarProvider>
@@ -13,6 +14,7 @@ export const PortalLayout = ({ children }: { children: ReactNode }) => (
           <Link to="/" className="text-sm font-semibold text-muted-foreground hover:text-foreground">
             ← Back to website
           </Link>
+          <div className="ml-auto"><NotificationBell /></div>
         </header>
         <main className="flex-1 p-6">{children}</main>
       </div>

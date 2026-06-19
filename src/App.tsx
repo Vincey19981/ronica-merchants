@@ -26,8 +26,22 @@ import PortalCart from "./pages/portal/Cart.tsx";
 import PortalTenders from "./pages/portal/Tenders.tsx";
 import TenderNew from "./pages/portal/TenderNew.tsx";
 import TenderDetail from "./pages/portal/TenderDetail.tsx";
+import PortalOrders from "./pages/portal/Orders.tsx";
+import OrderDetail from "./pages/portal/OrderDetail.tsx";
+import PortalInvoices from "./pages/portal/Invoices.tsx";
+import InvoiceDetail from "./pages/portal/InvoiceDetail.tsx";
+import PortalTickets from "./pages/portal/Tickets.tsx";
+import TicketNew from "./pages/portal/TicketNew.tsx";
+import TicketDetail from "./pages/portal/TicketDetail.tsx";
+import PortalAssets from "./pages/portal/Assets.tsx";
+import PortalDocuments from "./pages/portal/Documents.tsx";
 import AdminOrganizations from "./pages/admin/Organizations.tsx";
 import AdminUsers from "./pages/admin/Users.tsx";
+import AdminOrders from "./pages/admin/Orders.tsx";
+import AdminInvoices from "./pages/admin/Invoices.tsx";
+import AdminTickets from "./pages/admin/Tickets.tsx";
+import AdminAssets from "./pages/admin/Assets.tsx";
+import AdminAudit from "./pages/admin/Audit.tsx";
 
 const queryClient = new QueryClient();
 
@@ -132,6 +146,16 @@ const App = () => (
               }
             />
 
+            <Route path="/portal/orders" element={<ProtectedRoute><PortalLayout><PortalOrders /></PortalLayout></ProtectedRoute>} />
+            <Route path="/portal/orders/:id" element={<ProtectedRoute><PortalLayout><OrderDetail /></PortalLayout></ProtectedRoute>} />
+            <Route path="/portal/invoices" element={<ProtectedRoute><PortalLayout><PortalInvoices /></PortalLayout></ProtectedRoute>} />
+            <Route path="/portal/invoices/:id" element={<ProtectedRoute><PortalLayout><InvoiceDetail /></PortalLayout></ProtectedRoute>} />
+            <Route path="/portal/tickets" element={<ProtectedRoute><PortalLayout><PortalTickets /></PortalLayout></ProtectedRoute>} />
+            <Route path="/portal/tickets/new" element={<ProtectedRoute><PortalLayout><TicketNew /></PortalLayout></ProtectedRoute>} />
+            <Route path="/portal/tickets/:id" element={<ProtectedRoute><PortalLayout><TicketDetail /></PortalLayout></ProtectedRoute>} />
+            <Route path="/portal/assets" element={<ProtectedRoute><PortalLayout><PortalAssets /></PortalLayout></ProtectedRoute>} />
+            <Route path="/portal/documents" element={<ProtectedRoute><PortalLayout><PortalDocuments /></PortalLayout></ProtectedRoute>} />
+
             {/* Admin (legacy ops dashboard) */}
             <Route path="/admin" element={<Admin />} />
             <Route
@@ -154,6 +178,11 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route path="/admin/orders" element={<ProtectedRoute roles={["admin"]}><PortalLayout><AdminOrders /></PortalLayout></ProtectedRoute>} />
+            <Route path="/admin/invoices" element={<ProtectedRoute roles={["admin"]}><PortalLayout><AdminInvoices /></PortalLayout></ProtectedRoute>} />
+            <Route path="/admin/tickets" element={<ProtectedRoute roles={["admin"]}><PortalLayout><AdminTickets /></PortalLayout></ProtectedRoute>} />
+            <Route path="/admin/assets" element={<ProtectedRoute roles={["admin"]}><PortalLayout><AdminAssets /></PortalLayout></ProtectedRoute>} />
+            <Route path="/admin/audit" element={<ProtectedRoute roles={["admin"]}><PortalLayout><AdminAudit /></PortalLayout></ProtectedRoute>} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
