@@ -11,6 +11,9 @@ import {
   ShieldCheck,
   LogOut,
   UserCircle,
+  ClipboardList,
+  Server,
+  History,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -36,9 +39,10 @@ const portalItems: Item[] = [
   { title: "Catalog", url: "/portal/catalog", icon: Package },
   { title: "Cart", url: "/portal/cart", icon: ShoppingCart },
   { title: "Tenders", url: "/portal/tenders", icon: FileText, roles: ["procurement_officer"] },
-  { title: "Orders", url: "/portal/orders", icon: ShoppingCart, roles: ["procurement_officer"] },
-  { title: "Invoices", url: "/portal/invoices", icon: Receipt, roles: ["finance"] },
-  { title: "IT Tickets", url: "/portal/tickets", icon: LifeBuoy, roles: ["it_manager"] },
+  { title: "Orders", url: "/portal/orders", icon: ClipboardList },
+  { title: "Invoices", url: "/portal/invoices", icon: Receipt },
+  { title: "IT Tickets", url: "/portal/tickets", icon: LifeBuoy },
+  { title: "Assets", url: "/portal/assets", icon: Server },
   { title: "Documents", url: "/portal/documents", icon: FolderArchive },
 ];
 
@@ -46,6 +50,11 @@ const adminItems: Item[] = [
   { title: "Operations", url: "/admin", icon: ShieldCheck },
   { title: "Organizations", url: "/admin/organizations", icon: Building2 },
   { title: "Users & Roles", url: "/admin/users", icon: Users },
+  { title: "Orders", url: "/admin/orders", icon: ClipboardList },
+  { title: "Invoices", url: "/admin/invoices", icon: Receipt },
+  { title: "Tickets", url: "/admin/tickets", icon: LifeBuoy },
+  { title: "Assets", url: "/admin/assets", icon: Server },
+  { title: "Audit log", url: "/admin/audit", icon: History },
 ];
 
 export const PortalSidebar = () => {
