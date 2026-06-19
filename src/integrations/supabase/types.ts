@@ -1173,6 +1173,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_invoice_from_order: {
+        Args: { _order_id: string }
+        Returns: string
+      }
       current_org_id: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -1180,6 +1184,38 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      log_audit: {
+        Args: {
+          _action: string
+          _after?: Json
+          _before?: Json
+          _resource_id: string
+          _resource_type: string
+        }
+        Returns: undefined
+      }
+      next_invoice_number: { Args: never; Returns: string }
+      next_order_number: { Args: never; Returns: string }
+      next_ticket_number: { Args: never; Returns: string }
+      notify_user: {
+        Args: {
+          _body?: string
+          _link?: string
+          _title: string
+          _type: string
+          _user_id: string
+        }
+        Returns: string
+      }
+      record_payment: {
+        Args: {
+          _amount_cents: number
+          _invoice_id: string
+          _method: string
+          _reference?: string
+        }
+        Returns: string
       }
       resolve_contract_price: {
         Args: { _product_id: string; _qty?: number }
