@@ -24,7 +24,7 @@ const ITEMS = [
       "From BOQ submission to GRN sign-off, communication was direct and the paperwork was tender-grade. Exactly what evaluation committees want.",
     name: "Tender Committee Lead",
     org: "Educational Institution",
-    role: "Sample / Pending Publication",
+    role: "Reference on File",
   },
 ];
 

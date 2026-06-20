@@ -14,6 +14,21 @@ export const Hero = () => (
       }}
     />
 
+    {/* Gold geometric grid + diagonal texture */}
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(201,168,76,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.07) 1px, transparent 1px), repeating-linear-gradient(45deg, rgba(201,168,76,0.04) 0 1px, transparent 1px 22px)",
+        backgroundSize: "44px 44px, 44px 44px, auto",
+        maskImage:
+          "radial-gradient(ellipse at center, black 40%, transparent 85%)",
+        WebkitMaskImage:
+          "radial-gradient(ellipse at center, black 40%, transparent 85%)",
+      }}
+    />
+
     <div className="container-wide relative z-10 grid min-h-[100svh] gap-12 py-24 lg:grid-cols-12 lg:py-28">
       <div className="lg:col-span-8 flex flex-col justify-center">
         <p
