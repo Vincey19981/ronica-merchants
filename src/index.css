@@ -46,7 +46,9 @@ All colors MUST be HSL.
     --input: 220 18% 88%;
     --ring: 224 57% 24%;
 
-    --radius: 0.5rem;
+    --radius: 0.375rem;
+
+    --section-padding: 80px;
 
     --gradient-hero: linear-gradient(135deg, hsl(224 60% 16%) 0%, hsl(224 57% 24%) 60%, hsl(224 50% 30%) 100%);
     --shadow-card: 0 1px 2px hsl(224 56% 12% / 0.04), 0 4px 16px hsl(224 56% 12% / 0.06);
@@ -111,10 +113,12 @@ All colors MUST be HSL.
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-weight: 400;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Sora', 'Inter', sans-serif;
+    font-weight: 600;
     letter-spacing: -0.015em;
   }
 }
@@ -125,6 +129,16 @@ All colors MUST be HSL.
   }
   .container-wide {
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .section-pad {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+  @media (min-width: 768px) {
+    .section-pad {
+      padding-top: var(--section-padding);
+      padding-bottom: var(--section-padding);
+    }
   }
   .gold-underline {
     @apply relative inline-block;
@@ -171,4 +185,9 @@ All colors MUST be HSL.
     transform: translateY(-4px);
     box-shadow: var(--shadow-elevated);
   }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }

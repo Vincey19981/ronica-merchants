@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Layout } from "@/components/site/Layout";
 import { PageHero } from "@/components/site/PageHero";
-import { QuoteRequestForm } from "@/components/forms/QuoteRequestForm";
+import { QuoteEnquiryForm } from "@/components/forms/QuoteEnquiryForm";
 import { Clock, ShieldCheck, FileSpreadsheet } from "lucide-react";
 
 const RequestQuote = () => {
@@ -32,7 +32,7 @@ const RequestQuote = () => {
 
     <section className="bg-background py-12 sm:py-16">
       <div className="container-wide grid gap-10 lg:grid-cols-[1fr_360px]">
-        <QuoteRequestForm />
+        <QuoteEnquiryForm />
 
         <aside className="space-y-4">
           <div className="rounded-xl border border-border bg-card p-6">
