@@ -42,9 +42,6 @@ export const Header = () => {
               <Phone className="h-4 w-4 text-accent" />
               {SITE.phone}
             </a>
-            <Button asChild variant="ghost" size="sm">
-              <Link to="/auth/login">Sign in</Link>
-            </Button>
             <Button asChild variant="gold" size="sm">
               <Link to="/request-quote">Request a Quote</Link>
             </Button>
@@ -77,11 +74,6 @@ export const Header = () => {
               <Button asChild variant="gold" className="mt-3">
                 <Link to="/request-quote" onClick={() => setOpen(false)}>
                   Request a Quote
-                </Link>
-              </Button>
-              <Button asChild variant="outline" className="mt-2">
-                <Link to="/auth/login" onClick={() => setOpen(false)}>
-                  Sign in to Portal
                 </Link>
               </Button>
             </div>

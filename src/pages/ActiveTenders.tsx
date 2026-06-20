@@ -1,20 +1,8 @@
-import { Download, FileText } from "lucide-react";
+import { Download, FileText, Inbox } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/site/Layout";
 import { PageHero } from "@/components/site/PageHero";
-
-const tenders = [
-  { ref: "RM/T/2025/001", client: "[County Government — Sample]", category: "Stationery & Paper", status: "Quoting", date: "2025-01-12" },
-  { ref: "RM/T/2025/002", client: "[Public School — Sample]", category: "Furniture & Equipment", status: "Awarded", date: "2025-01-08" },
-  { ref: "RM/T/2025/003", client: "[NGO — Sample]", category: "Toner & Printer Supplies", status: "Quoting", date: "2025-01-05" },
-  { ref: "RM/T/2025/004", client: "[Ministry — Sample]", category: "Cleaning & Hygiene", status: "Delivering", date: "2024-12-22" },
-];
-
-const statusStyles: Record<string, string> = {
-  Quoting: "bg-accent-soft text-accent-foreground border-accent/40",
-  Awarded: "bg-success/10 text-success border-success/30",
-  Delivering: "bg-primary/10 text-primary border-primary/30",
-};
 
 const ActiveTenders = () => (
   <Layout>
@@ -26,40 +14,21 @@ const ActiveTenders = () => (
 
     <section className="bg-background py-16">
       <div className="container-tight">
-        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-surface">
-                <tr className="text-left text-xs font-bold uppercase tracking-wider text-primary">
-                  <th className="px-5 py-4">Tender Reference</th>
-                  <th className="px-5 py-4">Client</th>
-                  <th className="px-5 py-4">Category</th>
-                  <th className="px-5 py-4">Status</th>
-                  <th className="px-5 py-4">Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {tenders.map((t) => (
-                  <tr key={t.ref} className="hover:bg-surface/50">
-                    <td className="px-5 py-4 font-semibold text-primary">{t.ref}</td>
-                    <td className="px-5 py-4 text-muted-foreground">{t.client}</td>
-                    <td className="px-5 py-4 text-muted-foreground">{t.category}</td>
-                    <td className="px-5 py-4">
-                      <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusStyles[t.status]}`}>
-                        {t.status}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 text-muted-foreground">{t.date}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="rounded-xl border border-border bg-card p-10 text-center shadow-[var(--shadow-card)] sm:p-14">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+            <Inbox className="h-7 w-7" />
           </div>
+          <h2 className="mt-6 text-2xl font-bold text-primary sm:text-3xl">
+            Current Active Tenders
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground">
+            We are currently preparing our tender listings. Contact us directly with
+            your BOQ or tender document and we will respond within 24 hours.
+          </p>
+          <Button asChild variant="gold" size="lg" className="mt-8">
+            <Link to="/request-quote">Submit a Tender Enquiry</Link>
+          </Button>
         </div>
-        <p className="mt-5 text-sm text-muted-foreground">
-          Sample entries shown for illustration. Updated regularly. Contact us if your tender is
-          not listed — we will quote.
-        </p>
       </div>
     </section>
 
