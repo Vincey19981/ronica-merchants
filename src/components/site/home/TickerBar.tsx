@@ -3,19 +3,23 @@ const ITEMS = [
   "24-Hour Quotation Turnaround",
   "ISO-Ready Documentation",
   "Bulk Supply Pricing",
-  "PIN Registered",
+  "PIN & VAT Registered",
 ];
 
 export const TickerBar = () => (
-  <div className="bg-primary-dark border-y border-accent/20 py-3">
-    <div className="container-wide flex flex-wrap items-center justify-center gap-2 sm:justify-between sm:gap-4">
-      {ITEMS.map((t) => (
-        <span
-          key={t}
-          className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-          {t}
+  <div className="w-full bg-primary py-3">
+    <div className="container-wide flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
+      {ITEMS.map((t, i) => (
+        <span key={t} className="flex items-center gap-x-3">
+          <span
+            className="text-[12px] font-medium text-accent"
+            style={{ letterSpacing: "0.04em" }}
+          >
+            {t}
+          </span>
+          {i < ITEMS.length - 1 && (
+            <span className="text-accent" aria-hidden>·</span>
+          )}
         </span>
       ))}
     </div>
