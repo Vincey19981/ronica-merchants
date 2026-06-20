@@ -186,3 +186,8 @@ All colors MUST be HSL.
     box-shadow: var(--shadow-elevated);
   }
 }
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
