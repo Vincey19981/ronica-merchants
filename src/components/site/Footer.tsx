@@ -15,8 +15,11 @@ export const Footer = () => (
             {SITE.tagline} A trusted Kenyan supplier of office products
             for public and private sector tenders.
           </p>
+          <p className="mt-3 text-xs text-primary-foreground/60">
+            {SITE.pin} | {SITE.vat}
+          </p>
           <div className="mt-5 flex flex-wrap gap-2 text-[11px] uppercase tracking-wider">
-            {["PIN Registered", "VAT Compliant", "Tax Compliant", "LPO Ready"].map((b) => (
+            {["PIN Registered", "VAT Compliant", "Tax Compliant", "LPO Ready", "eGP Supplier Registered"].map((b) => (
               <span key={b} className="rounded border border-accent/40 bg-accent/10 px-2 py-1 text-accent">
                 ✓ {b}
               </span>

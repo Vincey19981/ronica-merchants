@@ -4,9 +4,9 @@ export const SITE = {
   phone: "+254 104 346 034",
   phoneHref: "tel:+254104346034",
   email: "info@ronicamerchants.co.ke",
-  address: "P.O. Box [XXXX-00100], Nairobi, Kenya",
-  pin: "PIN: P[Placeholder]",
-  vat: "VAT: [Placeholder]",
+  address: "Kenbanco House, Haile Selassie Avenue, Nairobi, Kenya",
+  pin: "KRA PIN: A014644630Q",
+  vat: "VAT Registered",
   hours: "Mon–Fri 8:00am – 5:00pm · Sat 9:00am – 1:00pm",
 };
 

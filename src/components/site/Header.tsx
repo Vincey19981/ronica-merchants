@@ -45,6 +45,7 @@ export const Header = () => {
             <Button asChild variant="ghost" size="sm">
               <Link to="/auth/login">Sign in</Link>
             </Button>
+            
             <Button asChild variant="gold" size="sm">
               <Link to="/request-quote">Request a Quote</Link>
             </Button>
