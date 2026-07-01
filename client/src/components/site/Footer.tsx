@@ -27,7 +27,7 @@ export const Footer = () => (
           <ul className="mt-4 space-y-2">
             {NAV_LINKS.map((l) => (
               <li key={l.to}>
-                <Link to={l.to} className="text-primary-foreground/80 hover:text-accent transition-colors duration-[150ms]">
+                <Link to={l.to} className="text-primary-foreground/80 hover:text-accent transition-colors duration-150">
                   {l.label}
                 </Link>
               </li>
@@ -58,7 +58,7 @@ export const Footer = () => (
               key={label}
               href={href}
               aria-label={label}
-              className="flex h-8 w-8 items-center justify-center border border-white/10 text-white/70 transition-colors duration-[180ms] hover:border-accent hover:text-accent"
+              className="flex h-8 w-8 items-center justify-center border border-white/10 text-white/70 transition-colors duration-200 hover:border-accent hover:text-accent"
               style={{ borderRadius: "6px" }}
             >
               <Icon className="h-4 w-4" />

@@ -24,7 +24,7 @@ export const ProductCard = ({ product, index = 0 }: { product: ProductCardItem; 
 
   return (
     <article
-      className="group flex flex-col overflow-hidden rounded-xl bg-card transition-all duration-[250ms] ease-out animate-fade-up"
+      className="group flex flex-col overflow-hidden rounded-xl bg-card transition-all duration-300 ease-out animate-fade-up"
       style={{
         animationDelay: `${(index % 8) * 60}ms`,
         boxShadow: "0 2px 8px rgba(0,0,0,0.06)",

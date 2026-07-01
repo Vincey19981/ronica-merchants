@@ -58,7 +58,7 @@ export const Hero = () => (
             asChild
             size="lg"
             variant="outline"
-            className="border-white bg-transparent text-white transition-colors duration-[180ms] hover:bg-white hover:text-primary"
+            className="border-white bg-transparent text-white transition-colors duration-200 hover:bg-white hover:text-primary"
           >
             <Link to="/contact">Submit Tender Enquiry</Link>
           </Button>

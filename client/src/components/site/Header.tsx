@@ -38,7 +38,7 @@ export const Header = () => {
                 to={l.to}
                 end={l.to === "/"}
                 className={({ isActive }) =>
-                  `px-3 py-2 text-sm font-medium transition-colors duration-[150ms] ${
+                  `px-3 py-2 text-sm font-medium transition-colors duration-150 ${
                     isActive
                       ? scrolled ? "text-accent" : "text-primary"
                       : scrolled ? "text-white/85 hover:text-accent" : "text-muted-foreground hover:text-primary"
