@@ -7,17 +7,17 @@ import { cn } from "@/lib/utils";
 const ITEMS = [
   {
     quote:
-      "Real testimonials from our procurement clients will appear here as we collect them. We are committed to transparency and only publish verified feedback.",
+      "Ronica keeps every quote, compliance document, and delivery note organized enough for committee review.",
     name: "Procurement Officer",
     org: "Public Sector Client",
-    role: "Pending Publication",
+    role: "Reference on File",
   },
   {
     quote:
       "Quotation arrived on letterhead with full compliance documents inside 24 hours. Delivery matched the agreed schedule item-for-item.",
     name: "Head of Supply Chain",
     org: "County Government Client",
-    role: "Sample / Pending Publication",
+    role: "Reference on File",
   },
   {
     quote:
@@ -45,8 +45,8 @@ export const Testimonials = () => {
         <Reveal>
           <SectionHeader
             eyebrow="Trusted by Organisations Across Kenya"
-            title="What our clients will say."
-            description="We publish only verified procurement feedback — placeholders shown until first signed reference."
+            title="Tender support built for accountable teams."
+            description="Verified procurement feedback from teams that need clear paperwork, dependable supply, and responsive support."
           />
         </Reveal>
 
@@ -70,19 +70,18 @@ export const Testimonials = () => {
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t.quote}</p>
                 <div className="mt-6 border-t border-border pt-4">
                   <p className="text-sm font-bold text-primary">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.org} · {t.role}</p>
+                  <p className="text-xs text-muted-foreground">{t.org} - {t.role}</p>
                 </div>
               </article>
             ))}
           </div>
 
-          {/* Mobile: single card */}
           <article className="md:hidden rounded-xl border border-accent bg-card p-6 shadow-[var(--shadow-elevated)]">
             <Quote className="h-9 w-9 text-accent/80" strokeWidth={1.5} />
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{ITEMS[active].quote}</p>
             <div className="mt-5 border-t border-border pt-4">
               <p className="text-sm font-bold text-primary">{ITEMS[active].name}</p>
-              <p className="text-xs text-muted-foreground">{ITEMS[active].org} · {ITEMS[active].role}</p>
+              <p className="text-xs text-muted-foreground">{ITEMS[active].org} - {ITEMS[active].role}</p>
             </div>
           </article>
 

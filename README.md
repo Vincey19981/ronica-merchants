@@ -1,6 +1,14 @@
-# Ronica Tender Buddy
+# Ronica Merchants
 
-Professional procurement portal migrated to a MERN stack.
+Professional procurement portal built as a MERN application.
+
+## Structure
+
+```text
+ronica-merchants/
+  client/   React + Vite + TypeScript frontend
+  server/   Node.js + Express + MongoDB backend
+```
 
 ## Stack
 
@@ -9,12 +17,12 @@ Professional procurement portal migrated to a MERN stack.
 - Database: MongoDB with Mongoose
 - Authentication: JWT with bcrypt password hashing, httpOnly cookie support, and bearer-token fallback
 - File uploads: Express-controlled Multer uploads with MongoDB metadata
-- Validation: Zod on frontend forms and backend routes
-- Tests: Vitest
+- Validation: Zod on client forms and backend routes
+- Tests: Vitest for the client
 
 ## Local Setup
 
-1. Install dependencies:
+1. Install workspace dependencies from the repository root:
 
    ```bash
    npm install
@@ -23,38 +31,28 @@ Professional procurement portal migrated to a MERN stack.
 2. Create local environment files:
 
    ```bash
-   cp .env.example .env
+   cp client/.env.example client/.env
+   cp server/.env.example server/.env
    ```
 
-3. Edit `.env` with local values:
-
-   ```env
-   VITE_API_BASE_URL="http://localhost:5000"
-   NODE_ENV="development"
-   PORT="5000"
-   CLIENT_ORIGIN="http://localhost:8080"
-   MONGODB_URI="mongodb://127.0.0.1:27017/ronica-tender-buddy"
-   JWT_SECRET="replace-with-a-long-random-secret-at-least-32-characters"
-   JWT_EXPIRES_IN="7d"
-   UPLOAD_DIR="uploads"
-   MAX_UPLOAD_MB="20"
-   ```
+3. Edit `server/.env` with your MongoDB connection string and JWT secret.
 
 4. Start MongoDB locally or point `MONGODB_URI` to MongoDB Atlas.
 
-5. Run the backend:
-
-   ```bash
-   npm run dev:server
-   ```
-
-6. Run the frontend in another terminal:
+5. Run both apps from the repository root:
 
    ```bash
    npm run dev
    ```
 
-7. Open the app at `http://localhost:8080`.
+6. Or run them separately:
+
+   ```bash
+   npm run dev:server
+   npm run dev:client
+   ```
+
+7. Open the client at `http://localhost:8080`.
 
 ## Useful Commands
 
@@ -67,7 +65,7 @@ npm run preview
 
 ## First Admin User
 
-The first registered user is automatically assigned the `admin` role. After production hardening, replace this with an explicit seed/admin invitation workflow.
+The first registered user is automatically assigned the `admin` role. Before production use, replace this with an explicit seed/admin invitation workflow.
 
 ## Human Production Inputs Required
 
@@ -77,10 +75,9 @@ The first registered user is automatically assigned the `admin` role. After prod
 - File storage credentials if replacing local disk uploads with S3, Cloudinary, Azure Blob, or similar.
 - Admin user creation or first-user role assignment policy.
 - Email/SMS provider credentials if notifications are added.
-- Supabase data export/import decisions for any existing production data.
 - Production deployment configuration.
 - Final legal and security review before real client use.
 
 ## Migration Notes
 
-See `docs/mern-migration-plan.md` for the audit summary, migration plan, and target folder structure.
+See `docs/mern-migration-plan.md` for the audit summary and migration plan.
