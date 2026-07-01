@@ -6,8 +6,20 @@ Professional procurement portal built as a MERN application.
 
 ```text
 ronica-merchants/
-  client/   React + Vite + TypeScript frontend
-  server/   Node.js + Express + MongoDB backend
+  client/                 React + Vite + TypeScript frontend
+    src/components/       Reusable UI, site, portal, admin, and form components
+    src/hooks/            Domain hooks for portal workflows
+    src/lib/api/          Central API client and endpoint modules
+    src/pages/            Public, auth, portal, and admin routes
+  server/                 Node.js + Express + MongoDB backend
+    src/config/           Environment and database setup
+    src/controllers/      HTTP request/response handlers
+    src/middleware/       Auth, roles, validation, upload, and error handling
+    src/models/           Mongoose domain models
+    src/routes/           Thin route definitions
+    src/serializers/      API response mappers
+    src/services/         Business logic and database workflows
+    src/validators/       Zod request schemas
 ```
 
 ## Stack
@@ -60,6 +72,7 @@ ronica-merchants/
 npm run build
 npm run lint
 npm run test
+npm run check -w server
 npm run preview
 ```
 

@@ -4,8 +4,21 @@
 
 ```text
 ronica-merchants/
-  client/   React + Vite + TypeScript frontend
-  server/   Node.js + Express + MongoDB backend
+  client/
+    src/components/
+    src/hooks/
+    src/lib/api/
+    src/pages/
+  server/
+    src/config/
+    src/controllers/
+    src/middleware/
+    src/models/
+    src/routes/
+    src/serializers/
+    src/services/
+    src/validators/
+    src/utils/
 ```
 
 The repository is organized as a MERN workspace. The root package only orchestrates workspace scripts and shared install state. Application code lives in `client/` and `server/`.
@@ -16,7 +29,7 @@ The client keeps the polished procurement portal experience:
 
 - Public marketing pages, product discovery, tender services, contact, and quote request flows.
 - Authenticated portal routes for dashboard, profile, catalog/cart, tenders, documents, orders, invoices, tickets, assets, and admin pages.
-- API access is centralized under `client/src/lib/api/`.
+- API access is centralized under `client/src/lib/api/`, keeping backend calls out of page components.
 - Authentication state is managed by `client/src/lib/auth.tsx`.
 - Protected routes wait for the session, profile, and roles before redirecting.
 
@@ -28,8 +41,12 @@ The backend is an Express API backed by MongoDB/Mongoose:
 - `server/src/server.js`: database connection and HTTP startup.
 - `server/src/config/`: environment and database config.
 - `server/src/models/`: User, Tender, ComplianceDocument, StoredFile, and PublicSubmission models.
-- `server/src/routes/`: auth, tender, compliance, and public submission routes.
+- `server/src/controllers/`: HTTP handlers for auth, tenders, compliance, and public submissions.
 - `server/src/middleware/`: auth, roles, validation, upload, not-found, and error handling.
+- `server/src/routes/`: thin endpoint definitions with middleware composition.
+- `server/src/serializers/`: response mappers that keep API payloads stable.
+- `server/src/services/`: business logic, access checks, file persistence, and database workflows.
+- `server/src/validators/`: Zod request schemas shared by route handlers.
 - `server/src/utils/`: token, response, error, and async helpers.
 
 ## Implemented Backend Modules
