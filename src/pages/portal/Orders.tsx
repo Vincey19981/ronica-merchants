@@ -1,20 +1,10 @@
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useOrders, ORDER_STATUS_LABELS, ORDER_STATUS_VARIANT } from "@/hooks/use-orders";
 import { formatPrice } from "@/hooks/use-products";
-import { supabase } from "@/integrations/supabase/client";
 
 const Orders = () => {
   const { data = [], isLoading } = useOrders();
-  const qc = useQueryClient();
-  useEffect(() => {
-    const ch = supabase.channel("orders-list")
-      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => qc.invalidateQueries({ queryKey: ["orders"] }))
-      .subscribe();
-    return () => { supabase.removeChannel(ch); };
-  }, [qc]);
 
   if (isLoading) return <div className="flex h-40 items-center justify-center"><Loader2 className="h-5 w-5 animate-spin" /></div>;
 

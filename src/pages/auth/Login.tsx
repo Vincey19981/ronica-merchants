@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +13,7 @@ const Login = () => {
   const [params] = useSearchParams();
   const from = params.get("from") || "/portal";
   const { toast } = useToast();
-  const { session, loading } = useAuth();
+  const { session, loading, signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -26,25 +25,18 @@ const Login = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setBusy(false);
-    if (error) return toast({ title: "Sign in failed", description: error.message, variant: "destructive" });
-
-    // Check for pending MFA factors
-    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (aal?.nextLevel === "aal2" && aal.currentLevel === "aal1") {
-      navigate("/auth/mfa-verify", { replace: true });
-    } else {
+    try {
+      await signIn(email, password);
       navigate(from, { replace: true });
+    } catch (error) {
+      toast({
+        title: "Sign in failed",
+        description: error instanceof Error ? error.message : "Please check your credentials and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(false);
     }
-  };
-
-  const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}${from}` },
-    });
-    if (error) toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });
   };
 
   return (
@@ -55,13 +47,6 @@ const Login = () => {
           <CardDescription>Access your contract catalog, tenders, and orders.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button type="button" variant="outline" className="w-full" onClick={signInWithGoogle}>
-            Continue with Google
-          </Button>
-          <div className="relative text-center text-xs uppercase tracking-wider text-muted-foreground">
-            <span className="relative z-10 bg-card px-2">or with email</span>
-            <span className="absolute inset-x-0 top-1/2 h-px bg-border" />
-          </div>
           <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Work email</Label>

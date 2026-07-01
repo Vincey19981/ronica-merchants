@@ -4,10 +4,10 @@ import { ArrowLeft, Upload, FileText, Download, Send, CheckCircle2 } from "lucid
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { tendersApi } from "@/lib/api/tenders";
 import {
   STATUS_LABELS,
   STATUS_TONE,
@@ -22,7 +22,7 @@ const formatDateTime = (s: string | null) =>
 const TenderDetail = () => {
   const { id } = useParams();
   const { data, isLoading } = useTender(id);
-  const { profile, hasRole, isAdmin, user } = useAuth();
+  const { profile, hasRole, isAdmin } = useAuth();
   const submitMut = useSubmitTender();
   const qc = useQueryClient();
   const [uploading, setUploading] = useState(false);
@@ -37,26 +37,12 @@ const TenderDetail = () => {
     if (!files || !data?.tender) return;
     setUploading(true);
     try {
-      for (const f of Array.from(files)) {
-        if (f.size > 20 * 1024 * 1024) {
-          toast({ title: "Too large", description: `${f.name} exceeds 20MB`, variant: "destructive" });
-          continue;
-        }
-        const safeName = f.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
-        const path = `${data.tender.org_id}/${data.tender.id}/${Date.now()}-${safeName}`;
-        const { error: upErr } = await supabase.storage
-          .from("tender-docs")
-          .upload(path, f, { contentType: f.type || undefined });
-        if (upErr) throw upErr;
-        await supabase.from("tender_documents").insert({
-          tender_id: data.tender.id,
-          doc_type: "specification",
-          file_name: f.name,
-          storage_path: path,
-          size_bytes: f.size,
-          uploaded_by: user?.id ?? null,
-        });
-      }
+      const valid = Array.from(files).filter((f) => {
+        if (f.size <= 20 * 1024 * 1024) return true;
+        toast({ title: "Too large", description: `${f.name} exceeds 20MB`, variant: "destructive" });
+        return false;
+      });
+      if (valid.length) await tendersApi.uploadDocuments(data.tender.id, valid);
       qc.invalidateQueries({ queryKey: ["tender", id] });
       toast({ title: "Documents uploaded" });
     } catch (e) {
@@ -66,9 +52,9 @@ const TenderDetail = () => {
     }
   };
 
-  const openDoc = async (path: string) => {
+  const openDoc = async (downloadPath: string) => {
     try {
-      const url = await docSignedUrl(path);
+      const url = await docSignedUrl(downloadPath);
       window.open(url, "_blank", "noopener,noreferrer");
     } catch (e) {
       toast({ title: "Cannot open file", description: e instanceof Error ? e.message : "", variant: "destructive" });
@@ -177,7 +163,7 @@ const TenderDetail = () => {
                         <span className="truncate">{d.file_name}</span>
                         <span className="text-xs text-muted-foreground">({((d.size_bytes ?? 0) / 1024).toFixed(1)} KB)</span>
                       </span>
-                      <button onClick={() => openDoc(d.storage_path)} className="inline-flex items-center gap-1 text-primary hover:underline">
+                      <button onClick={() => openDoc(d.download_url)} className="inline-flex items-center gap-1 text-primary hover:underline">
                         <Download className="h-3.5 w-3.5" /> Open
                       </button>
                     </li>

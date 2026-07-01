@@ -1,12 +1,59 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
+import { apiUrl } from "@/lib/api/client";
+import { tendersApi } from "@/lib/api/tenders";
 
-export type TenderStatus = Database["public"]["Enums"]["tender_status"];
-export type Tender = Database["public"]["Tables"]["tenders"]["Row"];
-export type TenderItem = Database["public"]["Tables"]["tender_items"]["Row"];
-export type TenderDocument = Database["public"]["Tables"]["tender_documents"]["Row"];
-export type TenderStatusEvent = Database["public"]["Tables"]["tender_status_history"]["Row"];
+export type TenderStatus =
+  | "draft"
+  | "submitted"
+  | "under_review"
+  | "clarification_requested"
+  | "awarded"
+  | "declined"
+  | "closed";
+
+export type Tender = {
+  id: string;
+  org_id: string;
+  reference: string;
+  title: string;
+  buyer_name: string | null;
+  description: string | null;
+  submission_deadline: string | null;
+  value_cents: number | null;
+  status: TenderStatus;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TenderItem = {
+  id: string;
+  description: string;
+  qty: number;
+  uom: string;
+  created_at?: string | null;
+};
+
+export type TenderDocument = {
+  id: string;
+  tender_id: string;
+  doc_type: string;
+  file_name: string;
+  storage_path: string;
+  size_bytes: number | null;
+  uploaded_by: string | null;
+  download_url: string;
+  created_at?: string | null;
+};
+
+export type TenderStatusEvent = {
+  id: string;
+  from_status: TenderStatus | null;
+  to_status: TenderStatus;
+  note: string | null;
+  changed_by: string | null;
+  created_at: string | null;
+};
 
 export const STATUS_LABELS: Record<TenderStatus, string> = {
   draft: "Draft",
@@ -31,57 +78,21 @@ export const STATUS_TONE: Record<TenderStatus, string> = {
 export const useTenders = () =>
   useQuery({
     queryKey: ["tenders"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tenders")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: tendersApi.list,
   });
 
 export const useTender = (id: string | undefined) =>
   useQuery({
     enabled: !!id,
     queryKey: ["tender", id],
-    queryFn: async () => {
-      const [tender, items, docs, history] = await Promise.all([
-        supabase.from("tenders").select("*").eq("id", id!).maybeSingle(),
-        supabase.from("tender_items").select("*").eq("tender_id", id!).order("created_at"),
-        supabase.from("tender_documents").select("*").eq("tender_id", id!).order("created_at"),
-        supabase
-          .from("tender_status_history")
-          .select("*")
-          .eq("tender_id", id!)
-          .order("created_at", { ascending: true }),
-      ]);
-      if (tender.error) throw tender.error;
-      return {
-        tender: tender.data,
-        items: (items.data ?? []) as TenderItem[],
-        docs: (docs.data ?? []) as TenderDocument[],
-        history: (history.data ?? []) as TenderStatusEvent[],
-      };
-    },
+    queryFn: () => tendersApi.get(id!),
   });
 
 export const useSubmitTender = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (tender: Tender) => {
-      const { error } = await supabase
-        .from("tenders")
-        .update({ status: "submitted" })
-        .eq("id", tender.id);
-      if (error) throw error;
-      // best-effort history entry (client only logs draft→submitted)
-      await supabase.from("tender_status_history").insert({
-        tender_id: tender.id,
-        from_status: tender.status,
-        to_status: "submitted",
-        note: "Submitted by client",
-      });
+      await tendersApi.updateStatus(tender.id, "submitted", "Submitted by client");
     },
     onSuccess: (_d, t) => {
       qc.invalidateQueries({ queryKey: ["tender", t.id] });
@@ -90,13 +101,7 @@ export const useSubmitTender = () => {
   });
 };
 
-export const docSignedUrl = async (storage_path: string) => {
-  const { data, error } = await supabase.storage
-    .from("tender-docs")
-    .createSignedUrl(storage_path, 60 * 10);
-  if (error) throw error;
-  return data.signedUrl;
-};
+export const docSignedUrl = async (downloadPath: string) => apiUrl(downloadPath);
 
 export const generateTenderReference = () =>
   `TND-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;

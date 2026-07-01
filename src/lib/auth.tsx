@@ -1,23 +1,26 @@
-import { createContext, useContext, useEffect, useMemo, useState, ReactNode } from "react";
-import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, ReactNode } from "react";
+import { authApi, type AuthUser } from "@/lib/api/auth";
 
-export type AppRole = Database["public"]["Enums"]["app_role"];
+export type AppRole = "admin" | "procurement_officer" | "finance" | "it_manager" | "compliance" | "executive";
 
 export interface Profile {
   id: string;
   email: string | null;
   full_name: string | null;
   org_id: string | null;
+  organization_name?: string | null;
   phone: string | null;
   job_title: string | null;
   mfa_enrolled: boolean;
 }
 
+export interface AppSession {
+  user: AuthUser;
+}
+
 interface AuthCtx {
-  session: Session | null;
-  user: User | null;
+  session: AppSession | null;
+  user: AuthUser | null;
   profile: Profile | null;
   roles: AppRole[];
   loading: boolean;
@@ -25,46 +28,55 @@ interface AuthCtx {
   hasRole: (r: AppRole) => boolean;
   refresh: () => Promise<void>;
   signOut: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
+  register: (input: {
+    email: string;
+    password: string;
+    full_name: string;
+    organization_name?: string;
+    phone?: string;
+    job_title?: string;
+  }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthCtx | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<AppSession | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const loadUserData = async (uid: string) => {
-    const [{ data: p }, { data: r }] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select("id,email,full_name,org_id,phone,job_title,mfa_enrolled")
-        .eq("id", uid)
-        .maybeSingle(),
-      supabase.from("user_roles").select("role").eq("user_id", uid),
-    ]);
-    setProfile((p as Profile) ?? null);
-    setRoles(((r ?? []) as { role: AppRole }[]).map((x) => x.role));
-  };
+  const applyUser = useCallback((user: AuthUser | null) => {
+    setSession(user ? { user } : null);
+    setProfile(user);
+    setRoles(user?.roles ?? []);
+  }, []);
+
+  const refresh = useCallback(async () => {
+    const { user } = await authApi.me();
+    applyUser(user);
+  }, [applyUser]);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-      if (s?.user) {
-        setTimeout(() => void loadUserData(s.user.id), 0);
-      } else {
-        setProfile(null);
-        setRoles([]);
-      }
-    });
-    supabase.auth.getSession().then(async ({ data: { session: s } }) => {
-      setSession(s);
-      if (s?.user) await loadUserData(s.user.id);
-      setLoading(false);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
+    let active = true;
+    authApi
+      .me()
+      .then(({ user }) => {
+        if (active) applyUser(user);
+      })
+      .catch(() => {
+        localStorage.removeItem("ronica_access_token");
+        if (active) applyUser(null);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [applyUser]);
 
   const value = useMemo<AuthCtx>(
     () => ({
@@ -75,14 +87,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       loading,
       isAdmin: roles.includes("admin"),
       hasRole: (r) => roles.includes(r),
-      refresh: async () => {
-        if (session?.user) await loadUserData(session.user.id);
+      refresh,
+      signIn: async (email, password) => {
+        const { user, token } = await authApi.login({ email, password });
+        localStorage.setItem("ronica_access_token", token);
+        applyUser(user);
       },
       signOut: async () => {
-        await supabase.auth.signOut();
+        await authApi.logout().catch(() => undefined);
+        localStorage.removeItem("ronica_access_token");
+        applyUser(null);
+      },
+      register: async (input) => {
+        const { user, token } = await authApi.register(input);
+        localStorage.setItem("ronica_access_token", token);
+        applyUser(user);
       },
     }),
-    [session, profile, roles, loading],
+    [session, profile, roles, loading, refresh, applyUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

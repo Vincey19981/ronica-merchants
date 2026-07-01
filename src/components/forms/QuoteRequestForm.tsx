@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { publicApi } from "@/lib/api/public";
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_EXT = /\.(pdf|xls|xlsx|doc|docx|csv|png|jpg|jpeg)$/i;
@@ -115,38 +115,15 @@ export const QuoteRequestForm = () => {
 
     setSubmitting(true);
     try {
-      let attachment_path: string | null = null;
-      if (file) {
-        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-        const path = `quotes/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safeName}`;
-        const { error: upErr } = await supabase.storage
-          .from("boq-uploads")
-          .upload(path, file, {
-            contentType: file.type || "application/octet-stream",
-            upsert: false,
-          });
-        if (upErr) throw upErr;
-        attachment_path = path;
-      }
-
-      const { data: inserted, error: insErr } = await supabase
-        .from("quote_requests")
-        .insert({
-          full_name: headerParsed.data!.full_name,
-          company_name: headerParsed.data!.company_name,
-          email: headerParsed.data!.email,
-          phone: headerParsed.data!.phone,
-          notes: headerParsed.data!.notes || null,
-          attachment_path,
-        })
-        .select("id")
-        .single();
-      if (insErr) throw insErr;
-
-      const { error: itemsErr } = await supabase.from("quote_request_items").insert(
-        itemsParsed.map((it) => ({ ...it, quote_request_id: inserted!.id })),
-      );
-      if (itemsErr) throw itemsErr;
+      const form = new FormData();
+      form.append("full_name", headerParsed.data!.full_name);
+      form.append("company_name", headerParsed.data!.company_name);
+      form.append("email", headerParsed.data!.email);
+      form.append("phone", headerParsed.data!.phone);
+      form.append("notes", headerParsed.data!.notes || "");
+      form.append("items", JSON.stringify(itemsParsed));
+      if (file) form.append("file", file);
+      await publicApi.submitQuoteRequest(form);
 
       setSubmitted(true);
       toast({

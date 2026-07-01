@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/lib/auth";
 
 const Signup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { register } = useAuth();
   const [fullName, setFullName] = useState("");
+  const [organization, setOrganization] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -19,21 +21,19 @@ const Signup = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/portal`,
-        data: { full_name: fullName },
-      },
-    });
-    setBusy(false);
-    if (error) return toast({ title: "Sign up failed", description: error.message, variant: "destructive" });
-    toast({
-      title: "Account created",
-      description: "Check your inbox to confirm your email, then sign in.",
-    });
-    navigate("/auth/login", { replace: true });
+    try {
+      await register({ email, password, full_name: fullName, organization_name: organization });
+      toast({ title: "Account created", description: "Welcome to the Ronica portal." });
+      navigate("/portal", { replace: true });
+    } catch (error) {
+      toast({
+        title: "Sign up failed",
+        description: error instanceof Error ? error.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -52,6 +52,10 @@ const Signup = () => {
             <div className="space-y-2">
               <Label htmlFor="email">Work email</Label>
               <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="organization">Organization</Label>
+              <Input id="organization" required value={organization} onChange={(e) => setOrganization(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>

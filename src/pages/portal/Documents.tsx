@@ -28,8 +28,8 @@ const Documents = () => {
     } catch (e: any) { toast({ title: "Upload failed", description: e.message, variant: "destructive" }); }
   };
 
-  const open = async (path: string) => {
-    try { window.open(await getComplianceSignedUrl(path), "_blank"); }
+  const open = async (downloadPath: string) => {
+    try { window.open(await getComplianceSignedUrl(downloadPath), "_blank"); }
     catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
   };
 
@@ -75,7 +75,7 @@ const Documents = () => {
                     <td className={`px-4 py-3 ${expired ? "text-destructive font-semibold" : expSoon ? "text-amber-600" : ""}`}>{d.expires_at || "—"}</td>
                     <td className="px-4 py-3"><span className="rounded-full bg-muted px-2 py-0.5 text-xs">{expired ? "expired" : d.status}</span></td>
                     <td className="px-4 py-3 text-right">
-                      <Button size="sm" variant="ghost" onClick={() => open(d.storage_path)}><ExternalLink className="h-4 w-4" /></Button>
+                      <Button size="sm" variant="ghost" onClick={() => open(d.download_url)}><ExternalLink className="h-4 w-4" /></Button>
                     </td>
                   </tr>
                 );

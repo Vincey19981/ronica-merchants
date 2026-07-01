@@ -7,10 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "@/hooks/use-toast";
-import { generateTenderReference } from "@/hooks/use-tenders";
+import { tendersApi } from "@/lib/api/tenders";
 
 const tenderSchema = z.object({
   title: z.string().trim().min(3, "Title must be at least 3 characters").max(200),
@@ -26,7 +25,7 @@ const MAX_FILE_BYTES = 20 * 1024 * 1024;
 
 const TenderNew = () => {
   const nav = useNavigate();
-  const { profile, user } = useAuth();
+  const { profile } = useAuth();
   const [title, setTitle] = useState("");
   const [buyer, setBuyer] = useState("");
   const [description, setDescription] = useState("");
@@ -74,66 +73,27 @@ const TenderNew = () => {
 
     setSubmitting(true);
     try {
-      const reference = generateTenderReference();
-      const { data: tender, error } = await supabase
-        .from("tenders")
-        .insert({
-          org_id: profile.org_id,
-          reference,
-          title: parsed.data.title,
-          buyer_name: parsed.data.buyer_name ?? null,
-          description: parsed.data.description ?? null,
-          submission_deadline: parsed.data.submission_deadline
-            ? new Date(parsed.data.submission_deadline).toISOString()
-            : null,
-          value_cents: parsed.data.value_cents ?? null,
-          status: mode === "submit" ? "submitted" : "draft",
-          created_by: user?.id ?? null,
-        })
-        .select("*")
-        .single();
-      if (error) throw error;
+      const { tender } = await tendersApi.create({
+        title: parsed.data.title,
+        buyer_name: parsed.data.buyer_name ?? null,
+        description: parsed.data.description ?? null,
+        submission_deadline: parsed.data.submission_deadline
+          ? new Date(parsed.data.submission_deadline).toISOString()
+          : null,
+        value_cents: parsed.data.value_cents ?? null,
+        status: mode === "submit" ? "submitted" : "draft",
+        items: cleanItems.map((i) => ({
+          description: i.description.trim(),
+          qty: i.qty,
+          uom: i.uom,
+        })),
+      });
 
-      if (cleanItems.length) {
-        const { error: itemsErr } = await supabase.from("tender_items").insert(
-          cleanItems.map((i) => ({
-            tender_id: tender.id,
-            description: i.description.trim(),
-            qty: i.qty,
-            uom: i.uom,
-          })),
-        );
-        if (itemsErr) throw itemsErr;
+      if (files.length) {
+        await tendersApi.uploadDocuments(tender.id, files);
       }
 
-      for (const f of files) {
-        const safeName = f.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
-        const path = `${profile.org_id}/${tender.id}/${Date.now()}-${safeName}`;
-        const { error: upErr } = await supabase.storage.from("tender-docs").upload(path, f, {
-          upsert: false,
-          contentType: f.type || undefined,
-        });
-        if (upErr) throw upErr;
-        await supabase.from("tender_documents").insert({
-          tender_id: tender.id,
-          doc_type: "specification",
-          file_name: f.name,
-          storage_path: path,
-          size_bytes: f.size,
-          uploaded_by: user?.id ?? null,
-        });
-      }
-
-      if (mode === "submit") {
-        await supabase.from("tender_status_history").insert({
-          tender_id: tender.id,
-          from_status: "draft",
-          to_status: "submitted",
-          note: "Submitted on creation",
-        });
-      }
-
-      toast({ title: mode === "submit" ? "Tender submitted" : "Draft saved", description: reference });
+      toast({ title: mode === "submit" ? "Tender submitted" : "Draft saved", description: tender.reference });
       nav(`/portal/tenders/${tender.id}`);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Failed to create tender";

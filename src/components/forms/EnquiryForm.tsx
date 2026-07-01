@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { publicApi } from "@/lib/api/public";
 
 const ENQUIRY_TYPES = ["General Quotation", "Tender/BOQ", "LPO Supply", "Bulk Order", "Other"] as const;
 const SOURCES = ["Google", "Referral", "Tender Notice Board", "Social Media", "Other"];
@@ -108,22 +108,12 @@ export const EnquiryForm = () => {
     }
     setSubmitting(true);
     try {
-      let attachment_path: string | null = null;
-      if (file) {
-        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-        const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safeName}`;
-        const { error: upErr } = await supabase.storage.from("boq-uploads").upload(path, file, {
-          contentType: file.type || "application/octet-stream",
-          upsert: false,
-        });
-        if (upErr) throw upErr;
-        attachment_path = path;
-      }
-      const { error } = await supabase.from("enquiries").insert({
-        ...parsed.data,
-        attachment_path,
+      const form = new FormData();
+      Object.entries(parsed.data).forEach(([key, value]) => {
+        if (value) form.append(key, value);
       });
-      if (error) throw error;
+      if (file) form.append("file", file);
+      await publicApi.submitEnquiry(form);
       setSubmitted(true);
       toast({ title: "Enquiry sent", description: "We'll respond within 24 business hours." });
     } catch (err) {
