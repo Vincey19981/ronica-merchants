@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, PenLine, FileText, Printer, Armchair, SprayCan, Laptop, PackageOpen, type LucideIcon } from "lucide-react";
+import { ArrowRight, FileText, Printer, Laptop, Network, ShieldCheck, type LucideIcon } from "lucide-react";
 import { CATEGORY_THEME, type ProductCategory } from "@/data/products";
-import { useAuth } from "@/lib/auth";
-import { useContractPrice, formatPrice } from "@/hooks/use-products";
 
 const ICON_MAP: Record<string, LucideIcon> = {
-  PenLine, FileText, Printer, Armchair, SprayCan, Laptop, PackageOpen,
+  FileText, Printer, Laptop, Network, ShieldCheck,
 };
 
 export interface ProductCardItem {
@@ -18,9 +16,6 @@ export interface ProductCardItem {
 export const ProductCard = ({ product, index = 0 }: { product: ProductCardItem; index?: number }) => {
   const theme = CATEGORY_THEME[product.category];
   const Icon = ICON_MAP[theme.iconName] ?? FileText;
-  const { user, profile } = useAuth();
-  const orgId = profile?.org_id ?? null;
-  const { data: contractPrice } = useContractPrice(product.id, 1, !!user && !!orgId && !!product.id);
 
   return (
     <article
@@ -41,7 +36,6 @@ export const ProductCard = ({ product, index = 0 }: { product: ProductCardItem; 
         e.currentTarget.style.transform = "translateY(0)";
       }}
     >
-      {/* Colored tint band */}
       <div
         className="flex h-[140px] items-center justify-center"
         style={{ backgroundColor: theme.tint }}
@@ -52,7 +46,6 @@ export const ProductCard = ({ product, index = 0 }: { product: ProductCardItem; 
         />
       </div>
 
-      {/* Body */}
       <div className="flex flex-1 flex-col p-5">
         <span className="inline-flex w-fit items-center rounded-full bg-accent px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-accent-foreground">
           {product.category}
@@ -62,13 +55,6 @@ export const ProductCard = ({ product, index = 0 }: { product: ProductCardItem; 
         </h3>
         <p className="mt-1 text-sm text-muted-foreground">{product.uom}</p>
 
-        {contractPrice != null && (
-          <div className="mt-3 rounded-md border border-accent/40 bg-accent-soft/40 px-2.5 py-1.5">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-accent">Your contract price</p>
-            <p className="text-sm font-bold text-primary">{formatPrice(contractPrice)}</p>
-          </div>
-        )}
-
         <div className="mt-auto pt-5">
           <Link
             to={`/request-quote?product=${encodeURIComponent(product.name)}`}
@@ -76,7 +62,7 @@ export const ProductCard = ({ product, index = 0 }: { product: ProductCardItem; 
           >
             <span className="flex items-center gap-1.5 transition-transform duration-200 group-hover/btn:translate-x-1">
               <ArrowRight className="h-4 w-4 -translate-x-3 opacity-0 transition-all duration-200 group-hover/btn:translate-x-0 group-hover/btn:opacity-100" />
-              Request Quote
+              Request a Quote
             </span>
           </Link>
         </div>
