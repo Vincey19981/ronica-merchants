@@ -1,20 +1,20 @@
-import { ShieldCheck, BarChart2, Truck, LayoutGrid } from "lucide-react";
+import { ShieldCheck, FileText, Clock, LayoutGrid } from "lucide-react";
 import { SectionHeader } from "@/components/site/SectionHeader";
 
 const ITEMS = [
-  { icon: ShieldCheck, title: "Tender Compliance", body: "PIN, VAT, CR12 & tax certificates ready on request." },
-  { icon: BarChart2, title: "Competitive Pricing", body: "Bulk supply rates with transparent BOQ breakdowns." },
-  { icon: Truck, title: "Fast Delivery", body: "Nairobi same-day. Upcountry within 48 hours." },
-  { icon: LayoutGrid, title: "Full Range", body: "Stationery, furniture, toner, cleaning — one LPO." },
+  { icon: Clock, title: "Quotes within 24 hours", body: "Send your list, BOQ or LPO requirements and receive a clear quotation." },
+  { icon: FileText, title: "LPO and BOQ ready", body: "Line items are prepared for tender review and procurement records." },
+  { icon: ShieldCheck, title: "Tax documentation", body: "KRA PIN registered, eTIMS-compliant and tax compliant documents available on request." },
+  { icon: LayoutGrid, title: "Tender supply range", body: "Stationery, printer consumables, IT equipment, networking and software under one request." },
 ];
 
 export const WhyUs = () => (
   <section className="section-pad bg-background">
     <div className="container-wide">
       <SectionHeader
-        eyebrow="Why Procurement Officers Choose Us"
-        title="Built for tenders, not retail."
-        description="Pricing, paperwork, delivery — every step is designed to help your evaluation committee say yes."
+        eyebrow="Why Procurement Teams Choose Us"
+        title="Built for tender quotations."
+        description="Clear requirements, documented quotations, and a practical supply range for public and private buyers."
       />
       <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {ITEMS.map(({ icon: Icon, title, body }) => (
