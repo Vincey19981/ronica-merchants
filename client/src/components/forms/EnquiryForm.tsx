@@ -5,18 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { publicApi } from "@/lib/api/public";
-
-const ENQUIRY_TYPES = ["General Quotation", "Tender/BOQ", "LPO Supply", "Bulk Order", "Other"] as const;
-const SOURCES = ["Google", "Referral", "Tender Notice Board", "Social Media", "Other"];
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_TYPES = [
@@ -28,11 +18,13 @@ const ALLOWED_TYPES = [
 const schema = z.object({
   name: z.string().trim().min(1, "Required").max(120),
   organization: z.string().trim().min(1, "Required").max(200),
-  email: z.string().trim().email("Invalid email").max(255),
-  phone: z.string().trim().min(5, "Too short").max(40),
-  enquiry_type: z.enum(ENQUIRY_TYPES),
+  email: z.string().trim().email("Invalid email").max(255).or(z.literal("")),
+  phone: z.string().trim().max(40),
   products_needed: z.string().trim().min(1, "Required").max(5000),
-  source: z.string().trim().max(80).optional(),
+  deadline: z.string().trim().max(80).optional(),
+}).refine((data) => data.email || data.phone.length >= 5, {
+  message: "Add a phone number or email address.",
+  path: ["phone"],
 });
 
 const RATE_LIMIT_KEY = "rm_enquiry_submissions";
@@ -85,9 +77,8 @@ export const EnquiryForm = () => {
       organization: String(fd.get("organization") ?? ""),
       email: String(fd.get("email") ?? ""),
       phone: String(fd.get("phone") ?? ""),
-      enquiry_type: String(fd.get("enquiry_type") ?? ""),
       products_needed: String(fd.get("products_needed") ?? ""),
-      source: String(fd.get("source") ?? "") || undefined,
+      deadline: String(fd.get("deadline") ?? "") || undefined,
     };
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
@@ -112,10 +103,11 @@ export const EnquiryForm = () => {
       Object.entries(parsed.data).forEach(([key, value]) => {
         if (value) form.append(key, value);
       });
+      form.append("enquiry_type", "Quote Request");
       if (file) form.append("file", file);
       await publicApi.submitEnquiry(form);
       setSubmitted(true);
-      toast({ title: "Enquiry sent", description: "We'll respond within 24 business hours." });
+      toast({ title: "Quote request sent", description: "We reply within 24 hours." });
     } catch (err) {
       console.error(err);
       toast({
@@ -132,10 +124,9 @@ export const EnquiryForm = () => {
     return (
       <div className="rounded-xl border border-success/30 bg-success/5 p-8 text-center">
         <CheckCircle2 className="mx-auto h-12 w-12 text-success" />
-        <h3 className="mt-4 text-xl font-bold text-primary">Enquiry received.</h3>
+        <h3 className="mt-4 text-xl font-bold text-primary">Quote request received.</h3>
         <p className="mt-2 text-muted-foreground">
-          Thank you. Our procurement team will respond within 24 business hours.
-          For urgent tenders, please call us directly.
+          Thank you. We reply within 24 hours.
         </p>
       </div>
     );
@@ -144,44 +135,40 @@ export const EnquiryForm = () => {
   return (
     <form onSubmit={onSubmit} className="space-y-5" noValidate>
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Full Name" name="name" required error={errors.name}>
-          <Input name="name" autoComplete="name" required />
+        <Field label="Name" name="name" required error={errors.name}>
+          <Input id="name" name="name" autoComplete="name" required />
         </Field>
-        <Field label="Organization / Company" name="organization" required error={errors.organization}>
-          <Input name="organization" autoComplete="organization" required />
+        <Field label="Organisation" name="organization" required error={errors.organization}>
+          <Input id="organization" name="organization" autoComplete="organization" required />
         </Field>
-        <Field label="Email Address" name="email" required error={errors.email}>
-          <Input type="email" name="email" autoComplete="email" required />
+        <Field label="Phone" name="phone" error={errors.phone}>
+          <Input id="phone" type="tel" name="phone" autoComplete="tel" />
         </Field>
-        <Field label="Phone Number" name="phone" required error={errors.phone}>
-          <Input type="tel" name="phone" autoComplete="tel" required />
+        <Field label="Email" name="email" error={errors.email}>
+          <Input id="email" type="email" name="email" autoComplete="email" />
         </Field>
       </div>
 
-      <Field label="Type of Enquiry" name="enquiry_type" required error={errors.enquiry_type}>
-        <Select name="enquiry_type" defaultValue="General Quotation">
-          <SelectTrigger><SelectValue /></SelectTrigger>
-          <SelectContent>
-            {ENQUIRY_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-          </SelectContent>
-        </Select>
-      </Field>
-
-      <Field label="Products Needed" name="products_needed" required error={errors.products_needed}>
+      <Field label="Items Needed" name="products_needed" required error={errors.products_needed}>
         <Textarea
+          id="products_needed"
           name="products_needed"
           rows={5}
-          placeholder="List the items and quantities. e.g. A4 Copy Paper 80gsm — 50 reams; HP 85A Toner — 10 units…"
+          placeholder="List the items and quantities. e.g. A4 Copy Paper 80gsm - 50 reams; HP 85A Toner - 10 units."
           required
         />
       </Field>
 
+      <Field label="Deadline" name="deadline" error={errors.deadline}>
+        <Input id="deadline" name="deadline" placeholder="e.g. Friday 18 October, or within 7 days" />
+      </Field>
+
       <div>
-        <Label className="text-sm font-semibold text-primary">Attach BOQ or Tender Document</Label>
-        <label className="mt-2 flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed border-border bg-surface px-4 py-4 hover:border-accent hover:bg-accent/5">
-          <Upload className="h-5 w-5 text-accent" />
+        <Label className="text-sm font-semibold text-primary">Optional BOQ File Upload</Label>
+        <label className="mt-2 flex min-h-14 cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed border-border bg-surface px-4 py-4 hover:border-accent hover:bg-accent/5">
+          <Upload className="h-5 w-5 shrink-0 text-accent" />
           <span className="text-sm text-muted-foreground">
-            {file ? file.name : "PDF or Excel · max 5MB"}
+            {file ? file.name : "PDF or Excel, max 5MB"}
           </span>
           <input
             type="file"
@@ -193,21 +180,12 @@ export const EnquiryForm = () => {
         {fileError && <p className="mt-1 text-xs text-destructive">{fileError}</p>}
       </div>
 
-      <Field label="How did you hear about us?" name="source" error={errors.source}>
-        <Select name="source" defaultValue="Google">
-          <SelectTrigger><SelectValue /></SelectTrigger>
-          <SelectContent>
-            {SOURCES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-          </SelectContent>
-        </Select>
-      </Field>
-
       <Button type="submit" variant="gold" size="lg" className="w-full" disabled={submitting}>
-        {submitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending…</> : "Send Enquiry"}
+        {submitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...</> : "Request a Quote"}
       </Button>
 
       <p className="text-center text-xs text-muted-foreground">
-        We respond to all quotation requests within 24 business hours.
+        We reply within 24 hours. Add either a phone number or an email address.
       </p>
     </form>
   );
