@@ -1,8 +1,8 @@
 const STATS = [
-  { value: "500+", label: "Products Supplied" },
   { value: "24hr", label: "Quotation Turnaround" },
-  { value: "100+", label: "Clients Served" },
-  { value: "5+", label: "Years in Operation" },
+  { value: "5", label: "Core Supply Categories" },
+  { value: "LPO", label: "Ready Quotations" },
+  { value: "BOQ", label: "Line-Item Support" },
 ];
 
 export const StatsCounter = () => (
