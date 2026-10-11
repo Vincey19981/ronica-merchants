@@ -1,49 +1,43 @@
 import { Link } from "react-router-dom";
-import { CheckCircle2, ArrowRight, FileText, Calculator, FileSignature, Truck, Receipt } from "lucide-react";
+import { CheckCircle2, ArrowRight, FileText, Calculator, FileSignature, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/site/Layout";
 import { PageHero } from "@/components/site/PageHero";
 import { SectionHeader } from "@/components/site/SectionHeader";
 
 const supplies = [
-  "Full stationery packages for offices and schools",
-  "Ink and toner for entire printer fleets",
-  "Office furniture for new office setups",
-  "Cleaning and hygiene supplies in bulk",
-  "Technology accessories and peripherals",
-  "Branded items (notebooks, pens, folders)",
+  "Office stationery for offices and schools",
+  "Printer consumables and accessories",
+  "Computers and office IT accessories",
+  "Networking equipment and cabling",
+  "Software and antivirus requirements",
 ];
 
 const workflow = [
-  { icon: FileText, title: "You share your BOQ or tender specs", body: "Email or upload the document — we accept PDF, Excel, or scanned copies." },
-  { icon: Calculator, title: "We price every line item", body: "Unit costs and bulk discounts shown clearly, ready for committee evaluation." },
-  { icon: FileSignature, title: "Formal quotation on letterhead", body: "Issued with all required tender attachments — PIN, VAT, CR12, TCC." },
-  { icon: Truck, title: "On-award delivery", body: "Strict adherence to your delivery schedule, with tracking and proof of delivery." },
-  { icon: Receipt, title: "Complete documentation", body: "Tax invoice, delivery note, and GRN issued together for clean accounting." },
+  { icon: FileText, title: "Share your BOQ or item list", body: "Use the quote form and attach a BOQ file when available." },
+  { icon: Calculator, title: "We prepare a clear quotation", body: "Line items and quantities are organised for LPO or tender review." },
+  { icon: FileSignature, title: "You review and confirm", body: "We clarify specifications, quantities and deadlines before supply." },
+  { icon: Receipt, title: "Documentation on request", body: "KRA PIN registered, eTIMS-compliant and tax compliant documents are shared directly when required." },
 ];
 
 const docs = [
-  "Formal Quotation on Company Letterhead",
-  "PIN Certificate",
-  "VAT Registration Certificate",
-  "Certificate of Incorporation",
-  "CR12 (Company Registry Extract)",
-  "Tax Compliance Certificate (KRA)",
-  "Bank Details on Official Letterhead",
-  "Company Profile",
-  "AGPO Certificate (if applicable)",
+  "Formal quotation",
+  "KRA PIN registered documentation",
+  "Tax compliance documentation",
+  "eTIMS-compliant documentation",
+  "Compliance documents available on request",
 ];
 
 const TenderServices = () => (
   <Layout>
-    <PageHero eyebrow="Tender Services" title="We Understand Tenders.">
-      Ronica Merchants has the documentation, pricing structure, and delivery
-      capability to fulfil public and private sector tenders across Kenya.
+    <PageHero eyebrow="Tender Services" title="Quotations for LPO and BOQ requests.">
+      Ronica Merchants supports government offices, county offices, schools,
+      NGOs and corporates with clear supply quotations across Kenya.
     </PageHero>
 
     <section className="bg-background py-20">
       <div className="container-tight">
-        <SectionHeader eyebrow="Tender Categories We Supply" title="What we deliver under tender." />
+        <SectionHeader eyebrow="Tender Categories We Supply" title="What we quote for." />
         <div className="mt-10 grid gap-3 sm:grid-cols-2">
           {supplies.map((s) => (
             <div key={s} className="flex items-start gap-3 rounded-lg border border-border bg-card p-5">
@@ -57,7 +51,7 @@ const TenderServices = () => (
 
     <section className="bg-surface py-20">
       <div className="container-tight">
-        <SectionHeader eyebrow="How We Work" title="A predictable, documented workflow." />
+        <SectionHeader eyebrow="How We Work" title="A simple quotation workflow." />
         <ol className="mt-12 space-y-5">
           {workflow.map((w, i) => (
             <li key={w.title} className="flex gap-5 rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
@@ -80,8 +74,9 @@ const TenderServices = () => (
     <section className="bg-background py-20">
       <div className="container-tight">
         <SectionHeader
-          eyebrow="Documents We Provide on Request"
-          title="A complete tender compliance pack."
+          eyebrow="Compliance"
+          title="Compliance documents available on request."
+          description="We keep sensitive registration, banking and personal information off the public website."
         />
         <div className="mt-10 grid gap-3 sm:grid-cols-2">
           {docs.map((d) => (
@@ -96,11 +91,11 @@ const TenderServices = () => (
 
     <section className="bg-primary text-primary-foreground py-20">
       <div className="container-tight text-center">
-        <h2 className="text-3xl font-bold sm:text-4xl">Have a tender or LPO? Contact us now.</h2>
-        <p className="mt-4 text-primary-foreground/80">We respond to all enquiries within 24 business hours.</p>
+        <h2 className="text-3xl font-bold sm:text-4xl">Have a tender, LPO or BOQ?</h2>
+        <p className="mt-4 text-primary-foreground/80">Send the requirements and we will reply within 24 hours.</p>
         <div className="mt-8 flex justify-center">
           <Button asChild variant="gold" size="lg">
-            <Link to="/contact">Submit Your BOQ / Tender Enquiry <ArrowRight className="ml-1 h-4 w-4" /></Link>
+            <Link to="/request-quote">Request a Quote <ArrowRight className="ml-1 h-4 w-4" /></Link>
           </Button>
         </div>
       </div>
