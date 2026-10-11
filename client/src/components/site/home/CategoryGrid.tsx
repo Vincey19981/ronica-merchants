@@ -1,43 +1,37 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, FileText, Printer, Armchair, SprayCan, Laptop, Package } from "lucide-react";
+import { ArrowRight, FileText, Printer, Laptop, Network, ShieldCheck } from "lucide-react";
 import { SectionHeader } from "@/components/site/SectionHeader";
 
 const CATS = [
   {
     icon: FileText,
     name: "Office Stationery",
-    body: "Pens, paper, files, envelopes — daily-use essentials.",
-    examples: ["A4 paper reams", "Ballpoint pens", "Filing folders"],
+    body: "Paper, files, pens and daily office supplies.",
+    examples: ["A4 paper", "Office files", "Writing supplies"],
   },
   {
     icon: Printer,
-    name: "Ink & Toner",
-    body: "OEM-equivalent toners for HP, Canon, Epson.",
-    examples: ["HP 85A", "Canon 045", "Epson 664 refill"],
-  },
-  {
-    icon: Armchair,
-    name: "Office Furniture",
-    body: "Executive chairs, desks, conference tables.",
-    examples: ["Executive chairs", "L-shaped desks", "4-drawer cabinets"],
-  },
-  {
-    icon: SprayCan,
-    name: "Cleaning Supplies",
-    body: "Sanitisers, mops, dispensers, washroom care.",
-    examples: ["Hand sanitiser 5L", "Mop sets", "Washroom dispensers"],
+    name: "Printer Consumables",
+    body: "Toner, ink and related printer supplies.",
+    examples: ["HP toner", "Ink bottles", "Printer accessories"],
   },
   {
     icon: Laptop,
-    name: "Technology Accessories",
-    body: "Peripherals, drives, cables, networking gear.",
-    examples: ["USB hubs", "HDMI cables", "Wireless keyboards"],
+    name: "Computers & Accessories",
+    body: "Computers, peripherals and office IT accessories.",
+    examples: ["Laptops", "Keyboards", "Storage drives"],
   },
   {
-    icon: Package,
-    name: "Packaging & Labelling",
-    body: "Tapes, cartons, labels, dispatch supplies.",
-    examples: ["Brown tape rolls", "Dispatch labels", "Bubble wrap rolls"],
+    icon: Network,
+    name: "Networking Equipment",
+    body: "Routers, switches, cables and network accessories.",
+    examples: ["Switches", "Routers", "Network cables"],
+  },
+  {
+    icon: ShieldCheck,
+    name: "Software & Antivirus",
+    body: "Software licences and endpoint protection requests.",
+    examples: ["Antivirus", "Office software", "Licences"],
   },
 ];
 
@@ -46,14 +40,14 @@ export const CategoryGrid = () => (
     <div className="container-wide">
       <SectionHeader
         eyebrow="Product Highlights"
-        title="One supplier. Every category."
-        description="A single LPO covers your entire office — from a ream of A4 to a 12-seat boardroom."
+        title="Grouped for quotation requests."
+        description="Request a quote by category, or send a BOQ and we will respond line by line within 24 hours."
       />
       <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {CATS.map((c) => (
           <Link
             key={c.name}
-            to="/products"
+            to={`/request-quote?category=${encodeURIComponent(c.name)}`}
             className="relative block h-full border border-border bg-primary text-white"
             style={{ borderRadius: "6px" }}
           >
@@ -75,7 +69,7 @@ export const CategoryGrid = () => (
                 ))}
               </div>
               <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium uppercase tracking-wider text-accent">
-                Explore <ArrowRight className="h-3.5 w-3.5" />
+                Request a Quote <ArrowRight className="h-3.5 w-3.5" />
               </span>
             </div>
           </Link>
