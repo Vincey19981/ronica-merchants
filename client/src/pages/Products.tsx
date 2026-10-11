@@ -12,38 +12,32 @@ import {
 import { useProducts } from "@/hooks/use-products";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  PenLine,
   FileText as FT,
   Printer,
-  Armchair,
-  SprayCan,
   Laptop,
-  PackageOpen,
+  Network,
+  ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 
 const CATEGORY_ORDER: ProductCategory[] = [
-  "Stationery",
-  "Paper",
-  "Toner & Ink",
-  "Furniture",
-  "Cleaning",
-  "Technology",
-  "Packaging",
+  "Office Stationery",
+  "Printer Consumables",
+  "Computers & Accessories",
+  "Networking Equipment",
+  "Software & Antivirus",
 ];
 
 const CATEGORY_BLURB: Record<ProductCategory, string> = {
-  Stationery: "Pens, files, staplers, envelopes — daily-use essentials for every desk.",
-  Paper: "A4/A3 reams, NCR, notebooks, receipt and invoice books.",
-  "Toner & Ink": "OEM-equivalent toners and inkjet cartridges for HP, Canon, Epson and more.",
-  Furniture: "Executive chairs, desks, conference tables, filing cabinets.",
-  Cleaning: "Sanitisers, mops, dispensers, washroom and breakroom care.",
-  Technology: "Printers, USB drives, peripherals, cables and accessories.",
-  Packaging: "Tapes, cartons, mailing bags, labels and dispatch supplies.",
+  "Office Stationery": "Paper, files, pens and daily office supplies for schools, offices and institutions.",
+  "Printer Consumables": "Toner, ink and printer consumables quoted by model and quantity.",
+  "Computers & Accessories": "Business computers, peripherals, storage and accessories for office requirements.",
+  "Networking Equipment": "Switches, routers, cabling, UPS units and network accessories.",
+  "Software & Antivirus": "Software licences, renewals and antivirus requests for procurement teams.",
 };
 
 const ICONS: Record<string, LucideIcon> = {
-  PenLine, FileText: FT, Printer, Armchair, SprayCan, Laptop, PackageOpen,
+  FileText: FT, Printer, Laptop, Network, ShieldCheck,
 };
 
 const Products = () => {
@@ -67,8 +61,8 @@ const CategoryLanding = () => {
   return (
       <Layout>
         <PageHero eyebrow="Product Catalogue" title="Browse by category.">
-          We supply seven categories under a single LPO. Pick a category to see
-          available items, or send us your BOQ and we'll quote it line by line.
+          We group office stationery, printer consumables, computers and accessories,
+          networking equipment, and software/antivirus for formal quotation requests.
         </PageHero>
 
         <section className="bg-background py-14 sm:py-20">
@@ -77,9 +71,9 @@ const CategoryLanding = () => {
               <div className="flex items-start gap-3">
                 <FileText className="h-6 w-6 shrink-0 text-accent" />
                 <div>
-                  <p className="font-bold text-primary">Have a full BOQ ready?</p>
+                  <p className="font-bold text-primary">Have a BOQ ready?</p>
                   <p className="text-sm text-muted-foreground">
-                    Skip browsing — submit a structured quote request with line items and your BOQ attached.
+                    Send your items and optional BOQ. We reply within 24 hours with a clear quotation.
                   </p>
                 </div>
               </div>
@@ -107,7 +101,7 @@ const CategoryLanding = () => {
                       <div className="flex items-center justify-between gap-2">
                         <h2 className="text-xl font-bold text-primary">{cat}</h2>
                         <span className="rounded-full bg-primary/5 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
-                          {isLoading ? "…" : `${counts.get(cat) ?? 0} items`}
+                          {isLoading ? "..." : `${counts.get(cat) ?? 0} items`}
                         </span>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">{CATEGORY_BLURB[cat]}</p>
@@ -121,7 +115,7 @@ const CategoryLanding = () => {
                         </Button>
                         <Button asChild variant="gold" size="sm">
                           <Link to={`/request-quote?category=${encodeURIComponent(cat)}`}>
-                            Request Quote
+                            Request a Quote
                           </Link>
                         </Button>
                       </div>
@@ -132,8 +126,7 @@ const CategoryLanding = () => {
             </div>
 
             <p className="mt-10 text-center text-xs text-muted-foreground">
-              Prices are not displayed publicly. We provide formal quotations only — to protect
-              tender margins and ensure you get the best applicable bulk rate.
+              No cart or checkout is provided. Product requests are handled through formal quotations.
             </p>
           </div>
         </section>
@@ -177,7 +170,7 @@ const CategoryDetail = ({ category: activeCategory }: { category: ProductCategor
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={`Search within ${activeCategory}…`}
+              placeholder={`Search within ${activeCategory}...`}
               aria-label="Search products"
               className="h-10 w-full min-w-[260px] rounded-lg border border-border bg-card pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 sm:w-80"
             />
@@ -197,7 +190,7 @@ const CategoryDetail = ({ category: activeCategory }: { category: ProductCategor
           </span>
           <Button asChild variant="gold" size="sm">
             <Link to={`/request-quote?category=${encodeURIComponent(activeCategory)}`}>
-              Request Quote
+              Request a Quote
             </Link>
           </Button>
         </div>
@@ -219,8 +212,7 @@ const CategoryDetail = ({ category: activeCategory }: { category: ProductCategor
                 Try a different keyword, or{" "}
                 <Link to="/request-quote" className="font-semibold text-accent hover:underline">
                   send us your quote request
-                </Link>{" "}
-                — we likely stock it.
+                </Link>.
               </p>
             </div>
           ) : (
