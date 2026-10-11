@@ -1,9 +1,10 @@
 const ITEMS = [
-  "Nationwide",
-  "24-Hour Quotation Turnaround",
-  "ISO-Ready Documentation",
-  "Bulk Supply Pricing",
-  "PIN & VAT Registered",
+  "Nairobi, Kenya",
+  "Quotes within 24 hours",
+  "LPO and BOQ ready",
+  "KRA PIN registered",
+  "eTIMS-compliant",
+  "Tax compliant",
 ];
 
 export const TickerBar = () => (
