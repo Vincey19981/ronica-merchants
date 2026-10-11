@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, Phone, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
 import { TopBar } from "./TopBar";
-import { NAV_LINKS, SITE } from "@/lib/site";
+import { NAV_LINKS } from "@/lib/site";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
@@ -31,14 +31,14 @@ export const Header = () => {
       >
         <div className="container-wide flex h-16 items-center justify-between gap-4">
           <Logo />
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden min-w-0 flex-nowrap items-center gap-1 lg:flex">
             {NAV_LINKS.map((l) => (
               <NavLink
                 key={l.to}
                 to={l.to}
                 end={l.to === "/"}
                 className={({ isActive }) =>
-                  `px-3 py-2 text-sm font-medium transition-colors duration-150 ${
+                  `whitespace-nowrap px-3 py-2 text-sm font-medium transition-colors duration-150 ${
                     isActive
                       ? scrolled ? "text-accent" : "text-primary"
                       : scrolled ? "text-white/85 hover:text-accent" : "text-muted-foreground hover:text-primary"
@@ -50,15 +50,8 @@ export const Header = () => {
               </NavLink>
             ))}
           </nav>
-          <div className="hidden md:flex items-center gap-3">
-            <a
-              href={SITE.phoneHref}
-              className={`hidden xl:flex items-center gap-1.5 text-sm font-medium ${scrolled ? "text-white" : "text-primary"}`}
-            >
-              <Phone className="h-4 w-4 text-accent" />
-              {SITE.phone}
-            </a>
-            <Button asChild variant="gold" size="sm">
+          <div className="hidden shrink-0 items-center md:flex">
+            <Button asChild variant="gold" size="sm" className="whitespace-nowrap">
               <Link to="/request-quote">Request a Quote</Link>
             </Button>
           </div>
@@ -72,7 +65,6 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* Mobile slide-in panel */}
       {open && (
         <div className="lg:hidden fixed inset-0 z-[110]">
           <div
