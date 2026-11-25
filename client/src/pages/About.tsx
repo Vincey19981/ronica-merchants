@@ -1,85 +1,79 @@
-import { CheckCircle2, FileText, MapPin, PackageCheck } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/site/Layout";
-import { PageHero } from "@/components/site/PageHero";
-import { SectionHeader } from "@/components/site/SectionHeader";
-import { SITE } from "@/lib/site";
+import { PageIntro } from "@/components/site/PageIntro";
+import { Reveal } from "@/components/anim/Reveal";
+import { EnquiryCTA } from "@/components/site/EnquiryCTA";
+import { usePageMeta } from "@/hooks/use-page-meta";
+import img from "@/assets/division-business.jpg";
 
-const highlights = [
-  { icon: MapPin, title: "Nairobi-based", body: "An independent supplier based in Nairobi, Kenya." },
-  { icon: PackageCheck, title: "Tender supply range", body: "Office stationery, printer consumables, computers, networking equipment and software/antivirus." },
-  { icon: FileText, title: "Quote-first process", body: "Requests are handled through clear quotations for LPO and BOQ review." },
+const VALUES = [
+  ["Integrity", "We say what we can deliver, and we deliver what we say."],
+  ["Innovation", "We look for better, simpler ways to solve real problems."],
+  ["Accountability", "We own our commitments and communicate openly."],
+  ["Excellence", "We hold our work to a professional, documented standard."],
+  ["Reliability", "We aim to be the partner organisations can depend on."],
+  ["Continuous improvement", "We learn from every engagement and keep refining."],
 ];
 
-const compliance = [
-  "KRA PIN registered",
-  "eTIMS-compliant",
-  "Tax compliant",
-  "Compliance documents available on request",
-];
+const About = () => {
+  usePageMeta("About Ronica", "Ronica Merchants Limited is a Nairobi-based technology, infrastructure and business solutions company. Our vision, mission, values and approach.");
+  return (
+    <Layout>
+      <PageIntro eyebrow="About Ronica" title="A forward-looking solutions company, grounded in Kenya." image={img}>
+        We bring together technology, infrastructure, enterprise thinking and strategic supply to help organisations work better.
+      </PageIntro>
 
-const About = () => (
-  <Layout>
-    <PageHero eyebrow="About Ronica Merchants" title="An independent Nairobi-based supplier.">
-      Ronica Merchants supplies office and IT procurement requirements for government,
-      county offices, schools, NGOs and corporates across Kenya.
-    </PageHero>
-
-    <section className="bg-background py-20">
-      <div className="container-tight grid gap-10 lg:grid-cols-2">
-        <div>
-          <SectionHeader eyebrow="Who We Are" title="Short, clear and procurement-focused." />
-          <p className="mt-6 text-muted-foreground">
-            Ronica Merchants is a sole proprietorship based in {SITE.location}. We provide
-            formal quotations for stationery, printer consumables, computers and accessories,
-            networking equipment, and software/antivirus requirements.
-          </p>
-          <p className="mt-4 text-muted-foreground">
-            The public website keeps business information intentionally minimal. Compliance
-            documents are shared directly with requesting procurement teams when needed for a quote,
-            LPO or tender submission.
-          </p>
-          <Button asChild variant="gold" className="mt-6">
-            <Link to="/request-quote">Request a Quote</Link>
-          </Button>
+      <section className="section-pad">
+        <div className="container-wide grid gap-12 lg:grid-cols-12">
+          <Reveal className="lg:col-span-4"><p className="eyebrow">Who we are</p></Reveal>
+          <Reveal className="space-y-6 text-lg leading-8 text-muted-foreground lg:col-span-8">
+            <p className="text-2xl font-semibold leading-snug text-primary md:text-3xl">Ronica Merchants Limited is a business solutions company based in Nairobi, focused on technology, infrastructure and strategic procurement.</p>
+            <p>We work with organisations that want practical, dependable and scalable answers to operational challenges — from systems and networks to process improvement and equipment supply. Kenya is our foundation; East Africa and beyond is our long-term ambition.</p>
+          </Reveal>
         </div>
-        <div className="space-y-5">
-          {highlights.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
-              <Icon className="h-7 w-7 text-accent" />
-              <h3 className="mt-3 text-lg font-bold text-primary">{title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{body}</p>
-            </div>
+      </section>
+
+      <section className="bg-primary text-primary-foreground">
+        <div className="container-wide section-pad grid gap-px overflow-hidden md:grid-cols-2">
+          {[["Our Vision", "To become a trusted provider of innovative business, technology and infrastructure solutions across Africa and beyond."], ["Our Mission", "To empower organisations through practical solutions, dependable service delivery and responsible innovation."]].map(([t, d], i) => (
+            <Reveal key={t} delay={i * 100} className="border-l-2 border-accent py-4 pl-8 md:pr-12">
+              <p className="eyebrow">{t}</p>
+              <p className="mt-4 text-2xl font-semibold leading-snug md:text-3xl">{d}</p>
+            </Reveal>
           ))}
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section className="bg-surface py-20">
-      <div className="container-tight">
-        <SectionHeader
-          eyebrow="Compliance"
-          title="Documents are available on request."
-          description="We do not publish registration numbers, tax identifiers, bank details or personal details on the public website."
-        />
-        <div className="mt-10 grid gap-3 sm:grid-cols-2">
-          {compliance.map((c) => (
-            <div key={c} className="flex items-center gap-3 rounded-lg border border-border bg-card px-5 py-4">
-              <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
-              <span className="font-medium text-primary">{c}</span>
-            </div>
+      <section className="section-pad">
+        <div className="container-wide">
+          <Reveal><p className="eyebrow">Our values</p><h2 className="mt-3 text-3xl font-bold text-primary md:text-5xl">What guides our work.</h2></Reveal>
+          <div className="mt-12 grid gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+            {VALUES.map(([t, d], i) => (
+              <Reveal key={t} delay={i * 60} className="h-full bg-background p-8 transition-colors hover:bg-surface">
+                <span className="text-sm font-semibold text-accent">0{i + 1}</span>
+                <h3 className="mt-4 text-xl font-bold text-primary">{t}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{d}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-pad bg-surface">
+        <div className="container-wide grid gap-12 md:grid-cols-3">
+          {[
+            ["Our business philosophy", "Good solutions are practical. We favour clarity over complexity, and long-term value over quick wins."],
+            ["Our approach", "Understand, design, deliver, support. Every engagement starts with listening and ends with a documented handover."],
+            ["Our commitment to clients", "Honest scoping, transparent communication and accountable delivery — whatever the size of the engagement."],
+          ].map(([t, d], i) => (
+            <Reveal key={t} delay={i * 100}>
+              <h2 className="text-xl font-bold text-primary">{t}</h2>
+              <p className="mt-3 leading-7 text-muted-foreground">{d}</p>
+            </Reveal>
           ))}
         </div>
-        <div className="mt-8 rounded-lg border border-accent/30 bg-accent-soft/40 p-5 text-sm text-primary">
-          <p className="font-semibold">Compliance documents available on request.</p>
-          <Link to="/request-quote" className="mt-2 inline-flex font-semibold text-primary underline decoration-accent underline-offset-4">
-            Use the quote form
-          </Link>
-        </div>
-      </div>
-    </section>
-  </Layout>
-);
-
+      </section>
+      <EnquiryCTA />
+    </Layout>
+  );
+};
 export default About;

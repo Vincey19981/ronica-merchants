@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
-import { TopBar } from "./TopBar";
 import { NAV_LINKS } from "@/lib/site";
 
 export const Header = () => {
@@ -12,88 +12,53 @@ export const Header = () => {
   const loc = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  useEffect(() => setOpen(false), [loc.pathname]);
+  useEffect(() => { document.body.style.overflow = open ? "hidden" : ""; }, [open]);
 
   return (
-    <header className="sticky top-0 z-[100] w-full">
-      <TopBar />
-      <div
-        className="border-b border-border transition-colors duration-200"
-        style={
-          scrolled
-            ? { background: "rgba(13, 27, 62, 0.97)", backdropFilter: "blur(8px)", borderColor: "transparent" }
-            : { background: "hsl(var(--background))" }
-        }
-      >
-        <div className="container-wide flex h-16 items-center justify-between gap-4">
-          <Logo />
-          <nav className="hidden min-w-0 flex-nowrap items-center gap-1 lg:flex">
-            {NAV_LINKS.map((l) => (
-              <NavLink
-                key={l.to}
-                to={l.to}
-                end={l.to === "/"}
-                className={({ isActive }) =>
-                  `whitespace-nowrap px-3 py-2 text-sm font-medium transition-colors duration-150 ${
-                    isActive
-                      ? scrolled ? "text-accent" : "text-primary"
-                      : scrolled ? "text-white/85 hover:text-accent" : "text-muted-foreground hover:text-primary"
-                  }`
-                }
-                style={{ borderRadius: "6px" }}
-              >
-                {l.label}
-              </NavLink>
-            ))}
-          </nav>
-          <div className="hidden shrink-0 items-center md:flex">
-            <Button asChild variant="gold" size="sm" className="whitespace-nowrap">
-              <Link to="/request-quote">Request a Quote</Link>
-            </Button>
-          </div>
-          <button
-            className="lg:hidden p-2 text-accent"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
-          >
-            <Menu className="h-5 w-5" strokeWidth={2} />
-          </button>
+    <header className={`sticky top-0 z-[100] w-full border-b bg-background/95 backdrop-blur transition-shadow ${scrolled ? "border-border shadow-[var(--shadow-card)]" : "border-transparent"}`}>
+      <div className="container-wide flex h-[72px] items-center justify-between gap-4">
+        <Logo />
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
+          {NAV_LINKS.map((l) => (
+            <NavLink key={l.to} to={l.to} end={l.to === "/"}
+              className={({ isActive }) => `relative px-3 py-2 text-sm font-medium transition-colors after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:origin-left after:bg-accent after:transition-transform ${isActive ? "text-primary after:scale-x-100" : "text-muted-foreground hover:text-primary after:scale-x-0 hover:after:scale-x-100"}`}>
+              {l.label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="hidden lg:block">
+          <Button asChild variant="navy" size="sm"><Link to="/contact">Discuss a Project</Link></Button>
         </div>
+        <button className="p-2 text-primary lg:hidden" onClick={() => setOpen(true)} aria-label="Open menu" aria-expanded={open}>
+          <Menu className="h-6 w-6" />
+        </button>
       </div>
 
-      {open && (
-        <div className="lg:hidden fixed inset-0 z-[110]">
-          <div
-            className="absolute right-0 top-0 h-full w-[82%] max-w-sm bg-primary text-white shadow-2xl"
-            style={{ animation: "slide-in-right 220ms ease-out" }}
-          >
-            <div className="flex h-16 items-center justify-between px-5 border-b border-white/10">
-              <span className="text-sm font-medium uppercase tracking-wider text-accent">Menu</span>
-              <button onClick={() => setOpen(false)} aria-label="Close menu" className="text-white">
-                <X className="h-5 w-5" />
-              </button>
+      {open && createPortal(
+        <div className="fixed inset-0 z-[110] lg:hidden" role="dialog" aria-modal="true">
+          <div className="absolute inset-0 bg-primary/60" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 top-0 flex h-full w-[86%] max-w-sm flex-col bg-primary text-primary-foreground" style={{ animation: "slide-in-right 240ms ease-out" }}>
+            <div className="flex h-[72px] items-center justify-between border-b border-primary-foreground/10 px-6">
+              <Logo light />
+              <button onClick={() => setOpen(false)} aria-label="Close menu"><X className="h-6 w-6" /></button>
             </div>
-            <nav className="flex flex-col px-2 py-3">
-              {NAV_LINKS.map((l) => (
-                <Link
-                  key={l.to}
-                  to={l.to}
-                  onClick={() => setOpen(false)}
-                  className={`flex h-12 items-center px-4 text-[18px] ${loc.pathname === l.to ? "text-accent" : "text-white"}`}
-                >
-                  {l.label}
+            <nav className="flex flex-1 flex-col px-6 py-6" aria-label="Mobile">
+              {NAV_LINKS.map((l, i) => (
+                <Link key={l.to} to={l.to} className={`flex items-baseline gap-4 border-b border-primary-foreground/10 py-4 text-xl font-semibold ${loc.pathname === l.to ? "text-accent" : ""}`}>
+                  <span className="text-xs text-primary-foreground/40">0{i + 1}</span>{l.label}
                 </Link>
               ))}
-              <Button asChild variant="gold" className="mx-4 mt-4">
-                <Link to="/request-quote" onClick={() => setOpen(false)}>Request a Quote</Link>
-              </Button>
             </nav>
+            <div className="p-6"><Button asChild variant="gold" className="w-full"><Link to="/contact">Discuss a Project</Link></Button></div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </header>
   );

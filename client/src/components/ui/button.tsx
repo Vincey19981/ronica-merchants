@@ -18,6 +18,9 @@ const buttonVariants = cva(
         gold: "bg-accent text-primary hover:bg-accent/90 font-medium",
         goldOutline: "border border-accent bg-transparent text-accent hover:bg-accent hover:text-primary font-medium",
         navy: "bg-primary text-primary-foreground hover:bg-primary-dark font-medium",
+        brand: "bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90 font-semibold",
+        light: "bg-background text-primary hover:bg-surface font-semibold",
+        lightOutline: "border border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 font-semibold",
       },
       size: {
         default: "h-10 px-4 py-2",

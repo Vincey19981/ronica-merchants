@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,12 +10,12 @@ import { PortalLayout } from "@/components/portal/PortalLayout";
 
 const Index = lazy(() => import("./pages/Index.tsx"));
 const About = lazy(() => import("./pages/About.tsx"));
-const Products = lazy(() => import("./pages/Products.tsx"));
-const TenderServices = lazy(() => import("./pages/TenderServices.tsx"));
-const ActiveTenders = lazy(() => import("./pages/ActiveTenders.tsx"));
+const Solutions = lazy(() => import("./pages/Solutions.tsx"));
+const Technology = lazy(() => import("./pages/Technology.tsx"));
+const Industries = lazy(() => import("./pages/Industries.tsx"));
+const Partnerships = lazy(() => import("./pages/Partnerships.tsx"));
 const Contact = lazy(() => import("./pages/Contact.tsx"));
 const Admin = lazy(() => import("./pages/Admin.tsx"));
-const RequestQuote = lazy(() => import("./pages/RequestQuote.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 const Login = lazy(() => import("./pages/auth/Login.tsx"));
 const Signup = lazy(() => import("./pages/auth/Signup.tsx"));
@@ -58,11 +58,15 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/tender-services" element={<TenderServices />} />
-              <Route path="/active-tenders" element={<ActiveTenders />} />
+              <Route path="/solutions" element={<Solutions />} />
+              <Route path="/technology" element={<Technology />} />
+              <Route path="/industries" element={<Industries />} />
+              <Route path="/partnerships" element={<Partnerships />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/request-quote" element={<RequestQuote />} />
+              <Route path="/products" element={<Navigate to="/solutions#procurement" replace />} />
+              <Route path="/tender-services" element={<Navigate to="/partnerships" replace />} />
+              <Route path="/active-tenders" element={<Navigate to="/partnerships" replace />} />
+              <Route path="/request-quote" element={<Navigate to="/contact" replace />} />
 
               <Route path="/auth/login" element={<Login />} />
               <Route path="/auth/signup" element={<Signup />} />

@@ -10,9 +10,9 @@ All colors MUST be HSL.
   :root {
     /* Ronica Merchants — institutional B2B palette */
     --background: 0 0% 100%;
-    --foreground: 224 56% 12%;
+    --foreground: 216 30% 18%;
 
-    --surface: 220 25% 97%;
+    --surface: 216 33% 97%;
     --surface-foreground: 224 56% 12%;
 
     --card: 0 0% 100%;
@@ -22,14 +22,14 @@ All colors MUST be HSL.
     --popover-foreground: 224 56% 12%;
 
     /* Deep navy #1A2B5F */
-    --primary: 224 57% 24%;
+    --primary: 219 54% 14%;
     --primary-foreground: 0 0% 100%;
-    --primary-dark: 224 60% 16%;
+    --primary-dark: 220 56% 10%;
 
     /* Gold #D4A017 */
-    --accent: 43 81% 46%;
-    --accent-foreground: 224 60% 16%;
-    --accent-soft: 43 80% 92%;
+    --accent: 177 68% 39%;
+    --accent-foreground: 219 54% 14%;
+    --accent-soft: 177 50% 93%;
 
     --secondary: 220 20% 95%;
     --secondary-foreground: 224 56% 12%;
@@ -44,25 +44,27 @@ All colors MUST be HSL.
 
     --border: 220 18% 88%;
     --input: 220 18% 88%;
-    --ring: 224 57% 24%;
+    --ring: 216 64% 40%;
 
     --radius: 0.375rem;
+    --brand-blue: 216 64% 40%;
+    --brand-blue-foreground: 0 0% 100%;
 
     --section-padding: 80px;
 
-    --gradient-hero: linear-gradient(135deg, hsl(224 60% 16%) 0%, hsl(224 57% 24%) 60%, hsl(224 50% 30%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(219 54% 14% / 0.55) 0%, hsl(219 54% 14% / 0.92) 100%);
     --shadow-card: 0 1px 2px hsl(224 56% 12% / 0.04), 0 4px 16px hsl(224 56% 12% / 0.06);
     --shadow-elevated: 0 10px 40px -12px hsl(224 57% 24% / 0.25);
 
     /* Dashboard sidebar — navy surface, gold active state */
-    --sidebar-background: 224 60% 16%;
+    --sidebar-background: 219 54% 14%;
     --sidebar-foreground: 220 25% 88%;
-    --sidebar-primary: 43 81% 46%;
-    --sidebar-primary-foreground: 224 60% 16%;
+    --sidebar-primary: 177 68% 39%;
+    --sidebar-primary-foreground: 219 54% 14%;
     --sidebar-accent: 224 50% 22%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 224 40% 28%;
-    --sidebar-ring: 43 81% 46%;
+    --sidebar-ring: 177 68% 39%;
   }
 
   .dark {
@@ -111,14 +113,15 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     font-weight: 400;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', 'Inter', sans-serif;
-    font-weight: 600;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     letter-spacing: -0.015em;
   }
 }
@@ -190,4 +193,13 @@ All colors MUST be HSL.
 @keyframes slide-in-right {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
+}
+
+@layer utilities {
+  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.18em] text-accent; }
+  .hero-lines { background-image: linear-gradient(hsl(var(--primary-foreground) / 0.06) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary-foreground) / 0.06) 1px, transparent 1px); background-size: 72px 72px; animation: hero-drift 40s linear infinite; }
+  @keyframes hero-drift { to { background-position: 72px 72px; } }
+  @keyframes hero-zoom { from { transform: scale(1.08); } to { transform: scale(1); } }
+  .animate-hero-zoom { animation: hero-zoom 2.4s cubic-bezier(.2,.7,.2,1) both; }
+  @media (prefers-reduced-motion: reduce) { .hero-lines, .animate-hero-zoom { animation: none; } }
 }

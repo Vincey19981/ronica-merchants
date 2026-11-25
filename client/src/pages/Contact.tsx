@@ -1,56 +1,41 @@
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
-import { PageHero } from "@/components/site/PageHero";
-import { EnquiryForm } from "@/components/forms/EnquiryForm";
+import { PageIntro } from "@/components/site/PageIntro";
+import { ContactForm } from "@/components/forms/ContactForm";
 import { SITE } from "@/lib/site";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
-const Contact = () => (
-  <Layout hideBottomCta>
-    <PageHero eyebrow="Contact & Quotation Request" title="Send us your tender. We'll respond in 24 hours.">
-      Procurement officers, secretariat staff, and corporate buyers — start a formal
-      quotation request below, or reach us directly by phone or email.
-    </PageHero>
-
-    <section className="bg-background py-16">
-      <div className="container-tight grid gap-10 lg:grid-cols-5">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
-            <h2 className="text-lg font-bold text-primary">Reach Us</h2>
-            <ul className="mt-5 space-y-4 text-sm">
-              <li className="flex gap-3"><MapPin className="h-5 w-5 mt-0.5 shrink-0 text-accent" /><span className="text-muted-foreground">{SITE.address}</span></li>
-              <li className="flex gap-3"><Phone className="h-5 w-5 mt-0.5 shrink-0 text-accent" /><a href={SITE.phoneHref} className="text-primary font-medium hover:text-accent">{SITE.phone}</a></li>
-              <li className="flex gap-3"><Mail className="h-5 w-5 mt-0.5 shrink-0 text-accent" /><a href={`mailto:${SITE.email}`} className="text-primary font-medium hover:text-accent break-all">{SITE.email}</a></li>
-              <li className="flex gap-3"><Clock className="h-5 w-5 mt-0.5 shrink-0 text-accent" /><span className="text-muted-foreground">{SITE.hours}</span></li>
-            </ul>
-          </div>
-
-          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
-            <iframe
-              title="Ronica Merchants location"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=36.78%2C-1.32%2C36.86%2C-1.26&layer=mapnik"
-              className="h-64 w-full border-0"
-              loading="lazy"
-            />
-          </div>
-
-          <div className="rounded-xl border border-accent/30 bg-accent-soft/40 p-5 text-sm text-primary">
-            <strong>Urgent tender?</strong> Call us directly for fastest response. We respond
-            to all written enquiries within 24 business hours.
+const Contact = () => {
+  usePageMeta("Contact", "Contact Ronica Merchants Limited in Nairobi about technology, infrastructure, business solutions or procurement requirements.");
+  return (
+    <Layout>
+      <PageIntro eyebrow="Contact" title="Let's discuss your project.">
+        Share a few details about your organisation and requirement. Our team will review your enquiry and respond.
+      </PageIntro>
+      <section className="section-pad">
+        <div className="container-wide grid gap-12 lg:grid-cols-12">
+          <aside className="space-y-8 lg:col-span-4">
+            {[
+              { icon: MapPin, label: "Office", value: SITE.address },
+              { icon: Phone, label: "Telephone", value: SITE.phone, href: SITE.phoneHref },
+              { icon: Mail, label: "Email", value: SITE.email, href: `mailto:${SITE.email}` },
+            ].map((c) => (
+              <div key={c.label} className="flex gap-4 border-b border-border pb-6">
+                <c.icon className="mt-1 h-5 w-5 shrink-0 text-accent" />
+                <div><p className="eyebrow text-muted-foreground">{c.label}</p>
+                  {c.href ? <a href={c.href} className="mt-1 block break-all font-semibold text-primary hover:text-brand-blue">{c.value}</a> : <p className="mt-1 font-semibold text-primary">{c.value}</p>}
+                </div>
+              </div>
+            ))}
+          </aside>
+          <div className="rounded-md border border-border p-6 sm:p-10 lg:col-span-8">
+            <h2 className="text-2xl font-bold text-primary">Send an enquiry</h2>
+            <p className="mt-2 text-sm text-muted-foreground">All fields are required.</p>
+            <div className="mt-8"><ContactForm /></div>
           </div>
         </div>
-
-        <div className="lg:col-span-3">
-          <div className="rounded-xl border border-border bg-card p-6 sm:p-8 shadow-[var(--shadow-card)]">
-            <h2 className="text-2xl font-bold text-primary">Quotation Request Form</h2>
-            <p className="mt-2 text-sm text-muted-foreground">All fields marked * are required.</p>
-            <div className="mt-6">
-              <EnquiryForm />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </Layout>
-);
-
+      </section>
+    </Layout>
+  );
+};
 export default Contact;
