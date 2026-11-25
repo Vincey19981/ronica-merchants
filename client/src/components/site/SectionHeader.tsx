@@ -13,7 +13,7 @@ export const SectionHeader = ({
     {eyebrow && (
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">{eyebrow}</p>
     )}
-    <h2 className="mt-3 text-3xl font-bold text-primary sm:text-4xl gold-underline">
+    <h2 className="mt-3 text-3xl font-medium text-primary sm:text-4xl gold-underline">
       {title}
     </h2>
     {description && (

@@ -24,13 +24,13 @@ const Solutions = () => {
         <section key={d.id} id={d.id} className={`scroll-mt-32 section-pad ${i % 2 ? "bg-surface" : ""}`}>
           <div className="container-wide grid items-center gap-12 lg:grid-cols-2">
             <Reveal className={i % 2 ? "lg:order-2" : ""}>
-              <div className="overflow-hidden rounded-md">
+              <div className="overflow-hidden rounded-sm">
                 <img src={d.image} alt={d.alt} loading="lazy" width={1280} height={896} className="aspect-[4/3] w-full object-cover transition-transform duration-700 hover:scale-105" />
               </div>
             </Reveal>
             <Reveal delay={100}>
               <p className="eyebrow">{d.no} — Division</p>
-              <h2 className="mt-3 text-3xl font-bold text-primary md:text-4xl">{d.title}</h2>
+              <h2 className="mt-3 text-3xl font-medium text-primary md:text-4xl">{d.title}</h2>
               <p className="mt-4 text-lg leading-8 text-muted-foreground">{d.summary}</p>
               <ul className="mt-8 grid gap-3 sm:grid-cols-2">
                 {d.services.map((s) => <li key={s} className="flex gap-3 text-sm text-foreground"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{s}</li>)}

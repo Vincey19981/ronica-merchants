@@ -21,9 +21,9 @@ const Industries = () => {
             const Icon = ICONS[i];
             return (
               <Reveal key={ind.title} delay={i * 70}>
-                <article className="group h-full rounded-md border border-border bg-background p-8 transition-all hover:-translate-y-1 hover:border-brand-blue hover:shadow-[var(--shadow-elevated)]">
+                <article className="group h-full rounded-sm border border-border bg-background p-8 transition-all hover:-translate-y-1 hover:border-brand-blue hover:shadow-[var(--shadow-elevated)]">
                   <Icon className="h-8 w-8 text-brand-blue" strokeWidth={1.5} />
-                  <h2 className="mt-6 text-xl font-bold text-primary">{ind.title}</h2>
+                  <h2 className="mt-6 text-xl font-medium text-primary">{ind.title}</h2>
                   <p className="mt-3 leading-7 text-muted-foreground">{ind.text}</p>
                   <span className="mt-6 block h-0.5 w-10 bg-accent transition-all group-hover:w-20" />
                 </article>

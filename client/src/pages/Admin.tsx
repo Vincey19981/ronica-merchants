@@ -12,7 +12,7 @@ const Admin = () => {
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Ronica operations</h1>
+            <h1 className="text-3xl font-medium tracking-tight">Ronica operations</h1>
             <p className="mt-1 text-muted-foreground">MERN administration workspace for tenders, compliance, and access control.</p>
           </div>
           <Button asChild variant="navy">

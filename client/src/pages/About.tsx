@@ -3,7 +3,7 @@ import { PageIntro } from "@/components/site/PageIntro";
 import { Reveal } from "@/components/anim/Reveal";
 import { EnquiryCTA } from "@/components/site/EnquiryCTA";
 import { usePageMeta } from "@/hooks/use-page-meta";
-import img from "@/assets/division-business.jpg";
+import img from "@/assets/partnership.jpg";
 
 const VALUES = [
   ["Integrity", "We say what we can deliver, and we deliver what we say."],
@@ -45,12 +45,12 @@ const About = () => {
 
       <section className="section-pad">
         <div className="container-wide">
-          <Reveal><p className="eyebrow">Our values</p><h2 className="mt-3 text-3xl font-bold text-primary md:text-5xl">What guides our work.</h2></Reveal>
-          <div className="mt-12 grid gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+          <Reveal><p className="eyebrow">Our values</p><h2 className="mt-3 text-3xl font-medium text-primary md:text-5xl">What guides our work.</h2></Reveal>
+          <div className="mt-12 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
             {VALUES.map(([t, d], i) => (
-              <Reveal key={t} delay={i * 60} className="h-full bg-background p-8 transition-colors hover:bg-surface">
+              <Reveal key={t} delay={i * 60} className="h-full border-t border-border pt-8 transition-colors hover:bg-surface">
                 <span className="text-sm font-semibold text-accent">0{i + 1}</span>
-                <h3 className="mt-4 text-xl font-bold text-primary">{t}</h3>
+                <h3 className="mt-4 text-xl font-medium text-primary">{t}</h3>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{d}</p>
               </Reveal>
             ))}
@@ -66,7 +66,7 @@ const About = () => {
             ["Our commitment to clients", "Honest scoping, transparent communication and accountable delivery — whatever the size of the engagement."],
           ].map(([t, d], i) => (
             <Reveal key={t} delay={i * 100}>
-              <h2 className="text-xl font-bold text-primary">{t}</h2>
+              <h2 className="text-xl font-medium text-primary">{t}</h2>
               <p className="mt-3 leading-7 text-muted-foreground">{d}</p>
             </Reveal>
           ))}

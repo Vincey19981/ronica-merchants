@@ -1,19 +1,22 @@
 import { Link } from "react-router-dom";
 
-export const LogoMark = ({ className = "h-8 w-8" }: { className?: string }) => (
-  <svg viewBox="0 0 32 32" className={className} aria-hidden>
-    <rect width="32" height="32" rx="6" className="fill-primary" />
-    <path d="M9 23V9h8a4.5 4.5 0 0 1 0 9h-8" fill="none" className="stroke-primary-foreground" strokeWidth="2.6" strokeLinejoin="round" />
-    <path d="M17 18l6 5" className="stroke-accent" strokeWidth="2.6" strokeLinecap="round" />
+/** Framed serif R: gold frame and letter; works on light and dark surfaces. */
+export const LogoMark = ({ className = "h-10 w-10" }: { className?: string }) => (
+  <svg viewBox="0 0 40 40" className={className} aria-hidden>
+    <rect x="1" y="1" width="38" height="38" fill="none" className="stroke-accent" strokeWidth="1.5" />
+    <text x="20" y="29" textAnchor="middle" className="fill-accent" style={{ font: "500 26px Newsreader, Georgia, serif" }}>R</text>
+    <path d="M24 22 L33 9" className="stroke-accent" strokeWidth="1.4" strokeLinecap="round" />
   </svg>
 );
 
 export const Logo = ({ light = false }: { light?: boolean }) => (
-  <Link to="/" className="inline-flex shrink-0 items-center gap-2.5" aria-label="Ronica Merchants Limited home">
-    <LogoMark className={`h-8 w-8 ${light ? "rounded-md ring-1 ring-primary-foreground/20" : ""}`} />
+  <Link to="/" className="inline-flex shrink-0 items-center gap-3" aria-label="Ronica Merchants Limited home">
+    <LogoMark />
     <span className="flex flex-col leading-none">
-      <span className={`text-lg font-extrabold tracking-[0.2em] ${light ? "text-primary-foreground" : "text-primary"}`}>RONICA</span>
-      <span className={`mt-1 text-[9px] font-semibold uppercase tracking-[0.28em] ${light ? "text-primary-foreground/60" : "text-muted-foreground"}`}>Merchants Limited</span>
+      <span className={`font-serif text-[17px] font-medium tracking-[0.16em] ${light ? "text-primary-foreground" : "text-primary"}`} style={{ fontFamily: "Newsreader, Georgia, serif" }}>
+        RONICA MERCHANTS
+      </span>
+      <span className={`mt-1.5 text-[9px] font-semibold uppercase tracking-[0.42em] ${light ? "text-primary-foreground/60" : "text-muted-foreground"}`}>Limited</span>
     </span>
   </Link>
 );

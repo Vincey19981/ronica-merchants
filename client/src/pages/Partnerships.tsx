@@ -26,9 +26,9 @@ const Partnerships = () => {
       <section className="section-pad">
         <div className="container-wide grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {ITEMS.map((it, i) => (
-            <Reveal key={it.t} delay={i * 70} className="h-full rounded-md border border-border p-8 transition-colors hover:bg-surface">
+            <Reveal key={it.t} delay={i * 70} className="h-full rounded-sm border border-border p-8 transition-colors hover:bg-surface">
               <it.icon className="h-7 w-7 text-brand-blue" strokeWidth={1.6} />
-              <h2 className="mt-6 text-lg font-bold text-primary">{it.t}</h2>
+              <h2 className="mt-6 text-lg font-medium text-primary">{it.t}</h2>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{it.d}</p>
             </Reveal>
           ))}

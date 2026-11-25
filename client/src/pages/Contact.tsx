@@ -28,8 +28,8 @@ const Contact = () => {
               </div>
             ))}
           </aside>
-          <div className="rounded-md border border-border p-6 sm:p-10 lg:col-span-8">
-            <h2 className="text-2xl font-bold text-primary">Send an enquiry</h2>
+          <div className="rounded-sm border border-border p-6 sm:p-10 lg:col-span-8">
+            <h2 className="text-2xl font-medium text-primary">Send an enquiry</h2>
             <p className="mt-2 text-sm text-muted-foreground">All fields are required.</p>
             <div className="mt-8"><ContactForm /></div>
           </div>

@@ -25,7 +25,7 @@ export const Layout = ({ children }: { children: ReactNode; hideBottomCta?: bool
       <main key={pathname} className="flex-1 animate-fade-in">{children}</main>
       <Footer />
       <button aria-label="Scroll to top" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className={`fixed bottom-6 right-6 z-50 grid h-11 w-11 place-items-center rounded-md bg-primary text-primary-foreground shadow-[var(--shadow-elevated)] transition-all hover:bg-brand-blue ${showTop ? "opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}>
+        className={`fixed bottom-6 right-6 z-50 grid h-11 w-11 place-items-center rounded-sm bg-primary text-primary-foreground shadow-[var(--shadow-elevated)] transition-all hover:bg-brand-blue ${showTop ? "opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}>
         <ArrowUp className="h-5 w-5" />
       </button>
     </div>
