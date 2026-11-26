@@ -13,7 +13,7 @@ export const contactSchema = z.object({
   organization: z.string().trim().min(2, "Please enter your organisation").max(200),
   email: z.string().trim().email("Enter a valid business email").max(255),
   phone: z.string().trim().regex(/^\+?[0-9 ()-]{7,20}$/, "Enter a valid telephone number"),
-  service: z.enum(SERVICE_OPTIONS as [string, ...string[]], { errorMap: () => ({ message: "Choose a service" }) }),
+  service: z.enum(SERVICE_OPTIONS as [string, ...string[]], { error: "Choose a service" }),
   subject: z.string().trim().min(3, "Add a short subject").max(150),
   message: z.string().trim().min(20, "Please share a little more detail (20+ characters)").max(4000),
 });

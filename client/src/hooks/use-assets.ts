@@ -9,7 +9,7 @@ export const useAssets = () =>
 export const useUpsertAsset = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async () => undefined,
+    mutationFn: async (_asset: Record<string, string | null | undefined>) => undefined,
     onSuccess: () => qc.invalidateQueries({ queryKey: ["assets"] }),
   });
 };

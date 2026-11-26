@@ -6,13 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProducts, formatPrice, useContractPrice } from "@/hooks/use-products";
 import { useCart } from "@/lib/cart";
-import { CATEGORY_THEME, type ProductCategory } from "@/data/products";
+import { PRODUCTS, CATEGORY_THEME, type ProductCategory } from "@/data/products";
 import { useAuth } from "@/lib/auth";
 import { toast } from "@/hooks/use-toast";
 
-const CATEGORIES: ProductCategory[] = [
-  "Stationery", "Paper", "Toner & Ink", "Furniture", "Cleaning", "Technology", "Packaging",
-];
+const CATEGORIES: ProductCategory[] = [...new Set(PRODUCTS.map((product) => product.category))];
 
 const PortalCatalog = () => {
   const [category, setCategory] = useState<ProductCategory | "all">("all");
